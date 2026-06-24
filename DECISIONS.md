@@ -61,3 +61,48 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
 ### D-009 · `types/database.ts` placeholder
 - **Décision** : type `Database` permissif en Phase 0, à remplacer par les types
   générés (`supabase gen types typescript`) en Phase 1.
+
+---
+
+## Phase 1 — Base de données & Auth
+
+### D-010 · Soft delete via `deleted_at` + aucune policy DELETE
+- **Contexte** : garde-fou #2 (jamais de suppression définitive de facture/
+  contrat) mais schéma du brief sans colonne dédiée.
+- **Décision** : ajout de `deleted_at timestamptz` sur `brands`, `deals`,
+  `contracts`, `invoices`. RLS sans aucune policy DELETE → la suppression
+  physique est impossible côté client (seul le service role peut purger).
+- **Conséquence** : toutes les lectures filtrent `deleted_at is null`.
+
+### D-011 · Sémantique de `get_brand_yearly_total`
+- **Décision** : somme `cash + in_kind` des deals d'un user avec une marque,
+  **par année basée sur `start_date`**, en **excluant** les deals `cancelled`,
+  soft-deletés, ou sans `start_date`.
+- **Raison** : un deal annulé ou non daté ne doit pas peser sur le seuil légal.
+
+### D-012 · Un seul template légal actif
+- **Décision** : index unique partiel `where is_active = true` sur
+  `legal_template_versions` → garantit une seule version active à la fois.
+
+### D-013 · Auth client + middleware SSR
+- **Décision** : `/login` et `/signup` sont des composants client utilisant le
+  browser client Supabase (`signInWithPassword`/`signUp`/OAuth Google) ; la
+  session est rafraîchie par `middleware.ts` (@supabase/ssr) ; `signOut` est une
+  server action ; `/auth/callback` échange le code (email/OAuth) contre session.
+- **Raison** : flux le plus simple et standard avec @supabase/ssr.
+
+### D-014 · Storage privé cloisonné par utilisateur
+- **Décision** : buckets `contracts`/`invoices` privés ; RLS storage autorisant
+  un user uniquement sur les objets dont le 1er segment de chemin = son
+  `auth.uid()` (convention `{user_id}/...`).
+
+### D-015 · Warning Edge `process.version` (supabase-js dans le middleware)
+- **Contexte** : le build affiche un warning « Node.js API process.version not
+  supported in Edge Runtime » via supabase-js importé dans le middleware.
+- **Décision** : laissé tel quel. Warning connu et documenté par @supabase/ssr ;
+  sans impact sur le fonctionnement de l'auth en middleware Edge.
+
+### D-016 · `subscriptions` : insert (free) par le user, update par le webhook
+- **Décision** : le propriétaire peut SELECT et INSERT sa ligne (plan `free`
+  uniquement) ; les UPDATE de plan ne passent que par le service role (webhook
+  Stripe) → impossible de s'auto-attribuer le plan Pro en éditant la ligne.

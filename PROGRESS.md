@@ -32,7 +32,34 @@ Next.js 15 (et non 16), shadcn base-nova (Base UI), `form.tsx` écrit à la main
 
 ---
 
-## ⬜ Phase 1 — Base de données & Auth
+## ✅ Phase 1 — Base de données & Auth (code-complet)
+
+**Fait :**
+- Migrations SQL (`supabase/migrations/`) :
+  - `…090001_init_schema` : toutes les tables du brief + colonnes `deleted_at`
+    (soft delete) + index.
+  - `…090002_rls_policies` : RLS activée partout, policies `user_id = auth.uid()`,
+    **aucune policy DELETE** (suppression physique bloquée côté client).
+  - `…090003_functions_triggers` : `set_updated_at`, et la fonction cœur
+    `get_brand_yearly_total(user_id, brand_id, year)`.
+  - `…090004_storage_buckets` : buckets privés `contracts`/`invoices` + RLS par
+    dossier `{user_id}`.
+  - `…090005_seed_legal_template` : seed `legal_template_versions` v1-2026
+    (contenu légal verbatim des sections 3.A/3.B/3.C en jsonb).
+- `types/database.ts` : types fidèles au schéma (à régénérer via
+  `supabase gen types` une fois le projet lié) + type `LegalClauses`.
+- Auth Supabase : `lib/supabase/middleware.ts` (refresh session + gardes de
+  routes), `middleware.ts`, `lib/auth.ts` (`getUser`/`requireUser`).
+- Pages `/login` et `/signup` (RHF + Zod + shadcn Form, email/mot de passe +
+  Google OAuth), `/auth/callback` (échange code → session), `signOut` (server
+  action), shell d'app protégé + `/dashboard` placeholder.
+
+**Critère « Done » :** build/lint/types ✅. La vérification fonctionnelle
+(inscription / connexion / déconnexion / persistance de session) nécessite un
+**projet Supabase réel (région UE) + les clés dans `.env.local` + l'application
+des migrations** — étape manuelle décrite dans le README (Phase 10). Le code est
+complet et prêt à être branché.
+
 ## ⬜ Phase 2 — Onboarding & profil
 ## ⬜ Phase 3 — Marques
 ## ⬜ Phase 4 — Wizard deals + logique de seuil
