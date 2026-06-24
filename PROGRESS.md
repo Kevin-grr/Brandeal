@@ -60,7 +60,24 @@ Next.js 15 (et non 16), shadcn base-nova (Base UI), `form.tsx` écrit à la main
 des migrations** — étape manuelle décrite dans le README (Phase 10). Le code est
 complet et prêt à être branché.
 
-## ⬜ Phase 2 — Onboarding & profil
+## ✅ Phase 2 — Onboarding & profil
+
+**Fait :**
+- `lib/validations/profile.ts` : schéma Zod du profil (SIRET 14 chiffres
+  optionnel, statut légal énuméré, `is_vat_franchise` ↔ `is_vat_applicable`).
+- `lib/profile.ts` : `getProfile()` (profil du user courant ou null).
+- `components/profile-form.tsx` : formulaire partagé (RHF + Zod + shadcn
+  Select/Checkbox), modes `onboarding` / `settings`, upsert via le client
+  Supabase ; en onboarding, crée aussi la ligne d'abonnement `free`.
+- `app/onboarding/page.tsx` : page d'onboarding (redirige vers /dashboard si le
+  profil existe déjà).
+- `app/(app)/settings/page.tsx` : édition du profil.
+- Gate de profil dans `app/(app)/layout.tsx` : redirige vers /onboarding tant
+  que le profil n'est pas créé. Nav (Tableau de bord, Paramètres).
+
+**Critère « Done » :** build/lint/types ✅. Validation Zod sur tous les champs
+obligatoires. Vérification fonctionnelle = nécessite Supabase (cf. Phase 1).
+
 ## ⬜ Phase 3 — Marques
 ## ⬜ Phase 4 — Wizard deals + logique de seuil
 ## ⬜ Phase 5 — Génération PDF contrat

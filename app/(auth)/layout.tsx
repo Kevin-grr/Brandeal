@@ -14,8 +14,8 @@ export default function AuthLayout({
       </Link>
       <div className="w-full max-w-sm">{children}</div>
       <p className="text-muted-foreground max-w-sm text-center text-xs">
-        Outil d&apos;aide à la rédaction de contrats. Ne constitue pas un conseil
-        juridique personnalisé.
+        Outil d&apos;aide à la rédaction de contrats. Ne constitue pas un
+        conseil juridique personnalisé.
       </p>
     </div>
   )

@@ -76,7 +76,9 @@ function LoginForm() {
     <Card>
       <CardHeader>
         <CardTitle>Connexion</CardTitle>
-        <CardDescription>Accédez à votre espace ContratCréateur.</CardDescription>
+        <CardDescription>
+          Accédez à votre espace ContratCréateur.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Form {...form}>
