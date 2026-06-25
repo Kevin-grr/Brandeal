@@ -54,6 +54,19 @@ export default async function AppLayout({
             </form>
           </div>
         </div>
+        <nav className="border-t sm:hidden">
+          <div className="mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto px-2 py-1.5">
+            {NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-3 py-1.5 text-sm whitespace-nowrap"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
       <footer className="border-t">
