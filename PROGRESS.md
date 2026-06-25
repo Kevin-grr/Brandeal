@@ -174,6 +174,25 @@ marque conformes à la section 4.2. Vérification e2e = nécessite Supabase.
 numérotation garantie sans trou (transaction Postgres). Vérification e2e =
 nécessite Supabase.
 
-## ⬜ Phase 8 — Stripe & paywall
+## ✅ Phase 8 — Stripe & paywall
+
+**Fait :**
+- `lib/stripe.ts` (client serveur).
+- `app/api/stripe/checkout` (Checkout abonnement Pro), `app/api/stripe/portal`
+  (Billing Portal), `app/api/webhooks/stripe` (signature + maj `subscriptions`
+  via service role : checkout.session.completed, customer.subscription.updated
+  /deleted).
+- Migration `…090007` : trigger `enforce_free_deal_limit` (2 deals/mois en
+  gratuit, backstop DB).
+- `components/subscription-section.tsx` (settings : plan + Passer au Pro / Gérer)
+  et `components/paywall-dialog.tsx` (modal d'upgrade).
+- Wizard : bannière proactive si limite atteinte + modal sur `FREE_DEAL_LIMIT`.
+- `/settings` : section Abonnement. Constante prix `PRO_PRICE_EUR` (14,99 €).
+
+**Décisions :** D-029 à D-031.
+
+**Critère « Done » :** build ✅. Flux upgrade Stripe + webhook + limite 2/mois
+appliquée (DB + UI). Vérification e2e = nécessite clés Stripe + Supabase.
+
 ## ⬜ Phase 9 — Landing page & pages légales
 ## ⬜ Phase 10 — Polish & déploiement

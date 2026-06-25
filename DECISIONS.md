@@ -201,3 +201,27 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
   « TVA non applicable, article 293 B du CGI » (depuis la base) ; sinon 20 % par
   défaut (aucun champ de taux n'étant saisi en V1). Total TTC calculé en
   conséquence dans le PDF.
+
+---
+
+## Phase 8 — Stripe & paywall
+
+### D-029 · Paywall : trigger DB (backstop) + modal UI
+- **Décision** : la limite « 2 deals/mois en gratuit » est appliquée par un
+  **trigger Postgres** `BEFORE INSERT` (migration 090007) → infalsifiable côté
+  client. L'UI ajoute (a) une bannière proactive si la limite est déjà atteinte
+  (calcul côté serveur dans `/deals/new`), et (b) un **modal** « Passez au Pro »
+  ouvert quand l'insert renvoie l'erreur `FREE_DEAL_LIMIT`.
+
+### D-030 · Construction du client Stripe au build
+- **Contexte** : `new Stripe("")` lève à l'import → échec de la collecte de
+  données de page au build (clé absente).
+- **Décision** : clé placeholder non-vide par défaut pour la construction ; la
+  vraie clé (`STRIPE_SECRET_KEY`) est lue à l'exécution côté serveur.
+
+### D-031 · Webhook : mise à jour via service role + propagation user_id
+- **Décision** : `/api/webhooks/stripe` vérifie la signature puis met à jour
+  `subscriptions` via le **client service role** (seul autorisé à changer le
+  plan). `user_id` est propagé via `client_reference_id` (checkout) et
+  `subscription_data.metadata.user_id` (events d'abonnement) ; fallback par
+  `stripe_customer_id`. Route exclue du middleware (pas de session requise).

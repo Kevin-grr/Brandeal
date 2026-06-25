@@ -1,6 +1,9 @@
 import { requireUser } from "@/lib/auth"
 import { getProfile } from "@/lib/profile"
+import { createClient } from "@/lib/supabase/server"
+import type { Plan } from "@/types/database"
 import { ProfileForm } from "@/components/profile-form"
+import { SubscriptionSection } from "@/components/subscription-section"
 import {
   Card,
   CardContent,
@@ -12,8 +15,16 @@ import {
 export const metadata = { title: "Paramètres" }
 
 export default async function SettingsPage() {
-  await requireUser()
+  const user = await requireUser()
   const profile = await getProfile()
+
+  const supabase = await createClient()
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("plan")
+    .eq("user_id", user.id)
+    .maybeSingle()
+  const plan: Plan = (sub?.plan as Plan) ?? "free"
 
   return (
     <div className="space-y-6">
@@ -36,7 +47,15 @@ export default async function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Section « Abonnement » : implémentée en Phase 8 (Stripe). */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Abonnement</CardTitle>
+          <CardDescription>Plan et facturation.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SubscriptionSection plan={plan} />
+        </CardContent>
+      </Card>
     </div>
   )
 }

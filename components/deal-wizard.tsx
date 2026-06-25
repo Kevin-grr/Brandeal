@@ -49,6 +49,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { BrandDialog } from "@/components/brand-dialog"
 import { LegalDisclaimer } from "@/components/legal-disclaimer"
+import { PaywallDialog } from "@/components/paywall-dialog"
 
 const STEPS = [
   "Marque",
@@ -81,17 +82,20 @@ export function DealWizard({
   userId,
   threshold,
   disclaimer,
+  atLimit = false,
 }: {
   brands: Brand[]
   userId: string
   threshold: number
   disclaimer: string
+  atLimit?: boolean
 }) {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [brandList, setBrandList] = useState<Brand[]>(brands)
   const [existingTotal, setExistingTotal] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [paywallOpen, setPaywallOpen] = useState(false)
 
   const form = useForm<DealFormValues>({
     resolver: zodResolver(dealSchema),
@@ -203,6 +207,10 @@ export function DealWizard({
 
     setSubmitting(false)
     if (error || !data) {
+      if (error?.message?.includes("FREE_DEAL_LIMIT")) {
+        setPaywallOpen(true)
+        return
+      }
       toast.error("Création impossible", { description: error?.message })
       return
     }
@@ -221,6 +229,18 @@ export function DealWizard({
           conforme.
         </p>
       </div>
+
+      {atLimit && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
+          <span>
+            Vous avez atteint la limite de 2 partenariats ce mois-ci (plan
+            gratuit).
+          </span>
+          <Button size="sm" type="button" onClick={() => setPaywallOpen(true)}>
+            Passer au Pro
+          </Button>
+        </div>
+      )}
 
       {/* Stepper */}
       <ol className="flex flex-wrap gap-2">
@@ -763,6 +783,8 @@ export function DealWizard({
           </div>
         </form>
       </Form>
+
+      <PaywallDialog open={paywallOpen} onOpenChange={setPaywallOpen} />
     </div>
   )
 }
