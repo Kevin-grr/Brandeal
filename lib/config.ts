@@ -26,3 +26,25 @@ export const STORAGE_BUCKETS = {
   contracts: "contracts",
   invoices: "invoices",
 } as const
+
+/**
+ * Identité légale de l'éditeur du service (mentions légales, CGU, RGPD).
+ * ⚠️ À COMPLÉTER avec les informations réelles de l'exploitant avant un
+ * lancement public (raison sociale, SIRET, adresse, email de contact).
+ */
+export const LEGAL_ENTITY = {
+  serviceName: "ContratCréateur",
+  editor: "ContratCréateur",
+  contactEmail: "contact@contratcreateur.fr",
+  appHost:
+    "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723 (États-Unis)",
+  dataHost:
+    "Supabase — base de données PostgreSQL managée, hébergement en Union européenne",
+}
+
+/**
+ * Texte de secours du disclaimer (affichage uniquement). La source de vérité
+ * reste la base (legal_template_versions). Utilisé si la DB est indisponible.
+ */
+export const DISCLAIMER_FALLBACK =
+  "Ce document a été généré automatiquement à partir des informations fournies par l'utilisateur. Il ne constitue ni un acte authentique ni un conseil juridique personnalisé. Il est fortement recommandé de le faire relire par un avocat ou un professionnel du droit avant signature."

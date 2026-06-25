@@ -194,5 +194,25 @@ nécessite Supabase.
 **Critère « Done » :** build ✅. Flux upgrade Stripe + webhook + limite 2/mois
 appliquée (DB + UI). Vérification e2e = nécessite clés Stripe + Supabase.
 
-## ⬜ Phase 9 — Landing page & pages légales
+## ✅ Phase 9 — Landing page & pages légales
+
+**Fait :**
+- Groupe `(marketing)` + `SiteHeader`/`SiteFooter` ; `app/page.tsx` placeholder
+  supprimé.
+- `/` : landing complète (hero, « pourquoi c'est important » avec le contexte
+  légal en langage simple, 4 cards fonctionnalités, résumé pricing).
+- `/pricing` : 2 offres (Gratuit / Pro), CTA contextuel (inscription si non
+  connecté, Checkout si connecté, plan actuel si déjà Pro).
+- Pages légales rédigées : `/legal/mentions-legales`, `/legal/cgu`,
+  `/legal/politique-confidentialite` (RGPD : données stockées, hébergement UE,
+  conservation, droits, contact), `/legal/avertissement-juridique` (disclaimer
+  exact depuis la DB + développement).
+- Liens légaux permanents en footer (public et espace connecté).
+
+**Décisions :** D-032, D-033.
+
+**Critère « Done » :** build ✅. Toutes les pages publiques rédigées intégralement
+(aucun placeholder/lorem). Identité d'éditeur à compléter (lib/config) avant
+lancement.
+
 ## ⬜ Phase 10 — Polish & déploiement

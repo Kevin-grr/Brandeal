@@ -56,6 +56,19 @@ export default async function AppLayout({
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
+      <footer className="border-t">
+        <div className="text-muted-foreground mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-4 text-xs">
+          <span>
+            Outil d&apos;aide à la rédaction — pas un conseil juridique.
+          </span>
+          <Link
+            href="/legal/avertissement-juridique"
+            className="hover:text-foreground"
+          >
+            Avertissement juridique
+          </Link>
+        </div>
+      </footer>
     </div>
   )
 }

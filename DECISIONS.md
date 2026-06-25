@@ -225,3 +225,22 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
   plan). `user_id` est propagé via `client_reference_id` (checkout) et
   `subscription_data.metadata.user_id` (events d'abonnement) ; fallback par
   `stripe_customer_id`. Route exclue du middleware (pas de session requise).
+
+---
+
+## Phase 9 — Landing & pages légales
+
+### D-032 · Groupe de routes `(marketing)` + header/footer publics
+- **Décision** : pages publiques (`/`, `/pricing`, `/legal/*`) regroupées sous
+  `app/(marketing)/` avec un layout partagé (SiteHeader + SiteFooter).
+  `app/page.tsx` (placeholder) supprimé au profit de `app/(marketing)/page.tsx`.
+- **Footer** : liens permanents vers les 4 pages légales (dont
+  « Avertissement juridique », garde-fou 3.C.3), présents aussi en pied de
+  l'espace connecté.
+
+### D-033 · Identité légale en config + disclaimer public depuis la DB
+- **Décision** : `LEGAL_ENTITY` dans `lib/config.ts` regroupe les infos
+  d'éditeur/hébergeur **à compléter par l'exploitant** avant lancement (pas de
+  fausses valeurs type SIRET inventé). Les pages CGU et Avertissement affichent
+  le **disclaimer exact tiré de la base** (`getActiveLegalTemplate`), avec un
+  `DISCLAIMER_FALLBACK` uniquement si la DB est indisponible.
