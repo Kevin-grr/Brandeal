@@ -153,7 +153,27 @@ end-to-end (upload Storage + DB) nécessite Supabase.
 **Critère « Done » :** build ✅. Affichage deals + statuts + alertes de seuil par
 marque conformes à la section 4.2. Vérification e2e = nécessite Supabase.
 
-## ⬜ Phase 7 — Facturation
+## ✅ Phase 7 — Facturation
+
+**Fait :**
+- Migration `…090006_invoice_function` : fonction `create_invoice()` avec
+  **numérotation séquentielle atomique** (verrou transactionnel par user) —
+  garantit une séquence continue sans trou ni race condition.
+- `lib/pdf/generateInvoice.tsx` : facture conforme section 3.B (émetteur+SIRET,
+  client+TVA, prestation, montants HT/TVA/TTC, mention 293 B si franchise,
+  conservation 10 ans + disclaimer en pied de page).
+- `app/api/deals/[id]/invoice/route.ts` : garde statut ≥ signé, **garde SIRET**
+  (NO_SIRET → /settings), calcul TVA, appel RPC, génération + upload Storage.
+- `components/invoice-section.tsx` : génération + liste + téléchargement (URL
+  signée) ; `/deals/[id]` enrichi d'une carte « Factures ».
+- Types DB : ajout de la fonction `create_invoice`.
+
+**Décisions :** D-026 à D-028.
+
+**Critère « Done » :** build ✅. Facturation conforme depuis un deal signé,
+numérotation garantie sans trou (transaction Postgres). Vérification e2e =
+nécessite Supabase.
+
 ## ⬜ Phase 8 — Stripe & paywall
 ## ⬜ Phase 9 — Landing page & pages légales
 ## ⬜ Phase 10 — Polish & déploiement

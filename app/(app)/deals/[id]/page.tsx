@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server"
 import { STORAGE_BUCKETS } from "@/lib/config"
 import { formatDate, formatEur } from "@/lib/format"
 import { CONTENT_TYPES, IP_DURATIONS } from "@/lib/validations/deal"
-import type { Brand, Contract, Deal } from "@/types/database"
+import type { Brand, Contract, Deal, Invoice } from "@/types/database"
 import {
   Card,
   CardContent,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card"
 import { DealActions } from "@/components/deal-actions"
 import { DealStatusBadge } from "@/components/deal-status-badge"
+import { InvoiceSection } from "@/components/invoice-section"
 import { LegalDisclaimer } from "@/components/legal-disclaimer"
 
 function labelOf(
@@ -69,6 +70,32 @@ export default async function DealDetailPage({
     downloadUrl = signed?.signedUrl ?? null
   }
 
+  const { data: invoicesRaw } = await supabase
+    .from("invoices")
+    .select("*")
+    .eq("deal_id", deal.id)
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false })
+
+  const invoices = await Promise.all(
+    ((invoicesRaw as Invoice[]) ?? []).map(async (inv) => {
+      let url: string | null = null
+      if (inv.pdf_storage_path) {
+        const { data: s } = await supabase.storage
+          .from(STORAGE_BUCKETS.invoices)
+          .createSignedUrl(inv.pdf_storage_path, 3600)
+        url = s?.signedUrl ?? null
+      }
+      return {
+        id: inv.id,
+        number: inv.invoice_number,
+        date: inv.issue_date,
+        url,
+      }
+    })
+  )
+
+  const canInvoice = deal.status === "signed" || deal.status === "paid"
   const total =
     Number(deal.cash_amount_eur ?? 0) + Number(deal.in_kind_value_eur ?? 0)
 
@@ -105,6 +132,23 @@ export default async function DealDetailPage({
             status={deal.status}
             hasContract={!!contract}
             downloadUrl={downloadUrl}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Factures</CardTitle>
+          <CardDescription>
+            Facturation conforme (numérotation séquentielle, mentions légales
+            françaises).
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <InvoiceSection
+            dealId={deal.id}
+            canInvoice={canInvoice}
+            invoices={invoices}
           />
         </CardContent>
       </Card>

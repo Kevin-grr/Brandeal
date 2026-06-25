@@ -340,6 +340,15 @@ export type Database = {
         Args: { p_user_id: string; p_brand_id: string; p_year: number }
         Returns: number
       }
+      create_invoice: {
+        Args: {
+          p_deal_id: string
+          p_amount_ht: number
+          p_vat_rate: number
+          p_vat_mention: string
+        }
+        Returns: Database["public"]["Tables"]["invoices"]["Row"]
+      }
     }
     Enums: Record<never, never>
     CompositeTypes: Record<never, never>

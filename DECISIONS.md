@@ -180,3 +180,24 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
 ### D-025 · Téléchargement par URL signée
 - **Décision** : bucket privé ; la page de détail génère côté serveur une URL
   signée (1 h) pour le dernier contrat et l'expose en lien de téléchargement.
+
+---
+
+## Phase 7 — Facturation
+
+### D-026 · Numérotation séquentielle via fonction Postgres + verrou
+- **Décision** : `create_invoice()` (migration 090006) attribue le numéro et
+  insère la facture dans la même transaction, après un
+  `pg_advisory_xact_lock(hashtext(user||':invoice'))` → séquence continue,
+  **sans trou et sans race condition** entre générations concurrentes du même
+  user. Format `FACT-{année}-{0000}`.
+
+### D-027 · Garde SIRET
+- **Décision** : la route facture renvoie `{ code: "NO_SIRET" }` si le profil n'a
+  pas de SIRET ; le client affiche un message et redirige vers `/settings`.
+
+### D-028 · TVA
+- **Décision** : si franchise (`is_vat_applicable = false`) → taux 0 + mention
+  « TVA non applicable, article 293 B du CGI » (depuis la base) ; sinon 20 % par
+  défaut (aucun champ de taux n'étant saisi en V1). Total TTC calculé en
+  conséquence dans le PDF.
