@@ -78,7 +78,25 @@ complet et prêt à être branché.
 **Critère « Done » :** build/lint/types ✅. Validation Zod sur tous les champs
 obligatoires. Vérification fonctionnelle = nécessite Supabase (cf. Phase 1).
 
-## ⬜ Phase 3 — Marques
+## ✅ Phase 3 — Marques
+
+**Fait :**
+- `lib/validations/brand.ts` : schéma Zod marque.
+- `components/brand-form.tsx` : formulaire marque (RHF + Zod), insert/update via
+  le client Supabase, renvoie la ligne créée.
+- `components/brand-dialog.tsx` : dialog réutilisable (réutilisé par le wizard en
+  Phase 4 pour la création rapide inline).
+- `components/brands-manager.tsx` : liste (table), création/édition (dialog),
+  suppression (soft delete, AlertDialog contrôlé).
+- `app/(app)/brands/page.tsx` : liste filtrée `deleted_at is null` + RLS.
+- Nav : ajout de « Marques ».
+
+**Décisions :** D-017 (soft delete systématique), D-018 (API Base UI `render`).
+
+**Critère « Done » :** build/lint/types ✅. CRUD complet ; l'isolation par RLS
+(`user_id = auth.uid()`) garantit qu'un user ne voit pas les marques d'un autre.
+Vérification fonctionnelle = nécessite Supabase.
+
 ## ⬜ Phase 4 — Wizard deals + logique de seuil
 ## ⬜ Phase 5 — Génération PDF contrat
 ## ⬜ Phase 6 — Dashboard

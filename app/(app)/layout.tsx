@@ -10,6 +10,7 @@ import { signOut } from "./actions"
 
 const NAV = [
   { href: "/dashboard", label: "Tableau de bord" },
+  { href: "/brands", label: "Marques" },
   { href: "/settings", label: "Paramètres" },
 ]
 

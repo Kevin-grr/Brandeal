@@ -106,3 +106,23 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
 - **Décision** : le propriétaire peut SELECT et INSERT sa ligne (plan `free`
   uniquement) ; les UPDATE de plan ne passent que par le service role (webhook
   Stripe) → impossible de s'auto-attribuer le plan Pro en éditant la ligne.
+
+---
+
+## Phase 3 — Marques
+
+### D-017 · Marques : soft delete systématique
+- **Contexte** : le brief évoque un hard delete quand aucun deal n'est lié, soft
+  delete sinon. Mais la RLS (D-010) bloque toute suppression physique côté client.
+- **Décision** : soft delete systématique (`deleted_at`) pour les marques.
+  Comportement visible identique (la marque disparaît de la liste), plus sûr,
+  cohérent avec le garde-fou « jamais de suppression réelle ».
+
+### D-018 · API Base UI : `render` au lieu de `asChild`
+- **Contexte** : les composants shadcn « base-nova » s'appuient sur Base UI, dont
+  les primitives (Dialog/AlertDialog Trigger, Close…) utilisent le prop
+  `render={<Composant />}` et non `asChild` (Radix).
+- **Décision** : utiliser `render` pour les triggers ; pour les confirmations de
+  suppression, piloter l'`AlertDialog` en **contrôlé** (`open`/`onOpenChange`)
+  car `AlertDialogAction` est un simple `Button` qui ne ferme pas le dialog.
+- **Note** : pattern à réutiliser dans le wizard (Phase 4) et au-delà.
