@@ -141,7 +141,18 @@ deal complète. Vérification e2e = nécessite Supabase.
 (`%PDF-`, footer fixe, watermark conditionnel, accents FR) ✅. La génération
 end-to-end (upload Storage + DB) nécessite Supabase.
 
-## ⬜ Phase 6 — Dashboard
+## ✅ Phase 6 — Dashboard
+
+**Fait :**
+- `app/(app)/dashboard/page.tsx` : liste des deals (marque, titre, statut,
+  montant cash+nature, date), encarts de suivi par marque avec barre de
+  progression vs seuil (totaux via la RPC `get_brand_yearly_total`), et
+  **bandeaux d'alerte rouges** quand le seuil est atteint sans contrat signé
+  cette année. Bouton « Nouveau partenariat ». État vide géré.
+
+**Critère « Done » :** build ✅. Affichage deals + statuts + alertes de seuil par
+marque conformes à la section 4.2. Vérification e2e = nécessite Supabase.
+
 ## ⬜ Phase 7 — Facturation
 ## ⬜ Phase 8 — Stripe & paywall
 ## ⬜ Phase 9 — Landing page & pages légales
