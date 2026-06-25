@@ -4,8 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 
-import { APP_NAME } from "@/lib/config"
 import { Button } from "@/components/ui/button"
+import { Logo } from "@/components/logo"
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
@@ -14,12 +14,8 @@ export function SiteHeader() {
   return (
     <header className="border-b">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4">
-        <Link
-          href="/"
-          className="font-semibold tracking-tight"
-          onClick={close}
-        >
-          {APP_NAME}
+        <Link href="/" onClick={close} aria-label="Brandeal — accueil">
+          <Logo />
         </Link>
 
         {/* Navigation desktop */}

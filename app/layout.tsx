@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default:
-      "ContratCréateur — contrats de partenariat conformes à la loi influenceurs",
-    template: "%s · ContratCréateur",
+      "Brandeal — contrats de partenariat conformes à la loi influenceurs",
+    template: "%s · Brandeal",
   },
   description:
     "Générez des contrats de partenariat conformes à la loi française n°2023-451, suivez le seuil légal de 1 000 € par marque et facturez en règle. Outil d'aide à la rédaction pour créateurs de contenu.",

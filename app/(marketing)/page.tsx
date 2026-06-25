@@ -52,7 +52,7 @@ export default function LandingPage() {
           2 minutes.
         </h1>
         <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg text-pretty">
-          ContratCréateur aide les créateurs de contenu français à sécuriser
+          Brandeal aide les créateurs de contenu français à sécuriser
           leurs collaborations de marque : contrats conformes, suivi du seuil
           légal de 1 000 € et facturation aux normes — sans avocat ni comptable.
         </p>
@@ -101,7 +101,7 @@ export default function LandingPage() {
               marque — et franchissent le seuil sans le savoir.
             </p>
             <p>
-              ContratCréateur structure vos partenariats, vous prévient au bon
+              Brandeal structure vos partenariats, vous prévient au bon
               moment et génère les documents nécessaires. C&apos;est un{" "}
               <strong>outil d&apos;aide à la rédaction</strong>, pas un
               substitut à un conseil juridique professionnel.

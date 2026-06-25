@@ -7,7 +7,7 @@
  * ci-dessous ne sert que d'affichage de secours si aucune version active n'est
  * trouvée — elle ne doit jamais servir de référence pour une décision légale.
  */
-export const APP_NAME = "ContratCréateur"
+export const APP_NAME = "Brandeal"
 
 /** Prix par défaut de l'abonnement Pro (modifiable ici uniquement). */
 export const PRO_PRICE_EUR = 14.99
@@ -33,8 +33,8 @@ export const STORAGE_BUCKETS = {
  * lancement public (raison sociale, SIRET, adresse, email de contact).
  */
 export const LEGAL_ENTITY = {
-  serviceName: "ContratCréateur",
-  editor: "ContratCréateur",
+  serviceName: "Brandeal",
+  editor: "Brandeal",
   contactEmail: "contact@contratcreateur.fr",
   appHost:
     "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723 (États-Unis)",

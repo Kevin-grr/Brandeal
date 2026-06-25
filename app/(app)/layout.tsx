@@ -3,8 +3,8 @@ import { redirect } from "next/navigation"
 
 import { requireUser } from "@/lib/auth"
 import { getProfile } from "@/lib/profile"
-import { APP_NAME } from "@/lib/config"
 import { Button } from "@/components/ui/button"
+import { Logo } from "@/components/logo"
 
 import { signOut } from "./actions"
 
@@ -28,8 +28,8 @@ export default async function AppLayout({
       <header className="border-b">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
           <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="font-semibold tracking-tight">
-              {APP_NAME}
+            <Link href="/dashboard" aria-label="Brandeal">
+              <Logo />
             </Link>
             <nav className="hidden items-center gap-4 sm:flex">
               {NAV.map((item) => (

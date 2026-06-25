@@ -123,7 +123,7 @@ export async function generateInvoicePdf(
   const doc = (
     <Document
       title={`Facture ${invoice.invoice_number}`}
-      author="ContratCréateur"
+      author="Brandeal"
     >
       <Page size="A4" style={styles.page}>
         <Text style={styles.title}>Facture</Text>
@@ -195,7 +195,7 @@ export async function generateInvoicePdf(
             fixed
             style={styles.watermark}
             render={({ pageNumber }) =>
-              pageNumber === 1 ? "Document généré avec ContratCréateur" : ""
+              pageNumber === 1 ? "Document généré avec Brandeal" : ""
             }
           />
         ) : null}

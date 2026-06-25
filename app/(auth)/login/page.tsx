@@ -77,7 +77,7 @@ function LoginForm() {
       <CardHeader>
         <CardTitle>Connexion</CardTitle>
         <CardDescription>
-          Accédez à votre espace ContratCréateur.
+          Accédez à votre espace Brandeal.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

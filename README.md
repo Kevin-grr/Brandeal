@@ -1,10 +1,10 @@
-# ContratCréateur
+# Brandeal
 
 Outil SaaS d'aide à la rédaction de **contrats de partenariat** et de **factures**
 conformes pour les créateurs de contenu français, avec **suivi du seuil légal de
 1 000 €** par marque (loi n°2023-451 « loi influenceurs » + décret n°2025-1137).
 
-> ⚠️ **Avertissement.** ContratCréateur est un outil d'aide à la rédaction, pas un
+> ⚠️ **Avertissement.** Brandeal est un outil d'aide à la rédaction, pas un
 > conseil juridique. **Avant tout lancement public, les modèles de contrat et de
 > facture doivent être relus et validés par un avocat ou un expert-comptable
 > spécialisé.**
@@ -104,7 +104,7 @@ Toutes les clés sont décrites dans [`.env.example`](./.env.example).
 
 ## Configuration Stripe
 
-1. Créer un **produit** « ContratCréateur Pro » avec un **prix récurrent mensuel**
+1. Créer un **produit** « Brandeal Pro » avec un **prix récurrent mensuel**
    (14,99 € par défaut, modifiable via `PRO_PRICE_EUR` dans `lib/config.ts`).
    Copier l'**ID du prix** (`price_…`) dans `STRIPE_PRICE_ID_PRO`.
 2. Copier les clés API (test puis live) dans `.env.local`.

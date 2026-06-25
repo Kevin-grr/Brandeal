@@ -22,7 +22,7 @@ const FREE_FEATURES = [
   "Jusqu'à 2 contrats par mois",
   "Suivi automatique du seuil de 1 000 € par marque",
   "Génération de factures conformes",
-  "Watermark « Généré avec ContratCréateur » sur les PDF",
+  "Watermark « Généré avec Brandeal » sur les PDF",
 ]
 
 const PRO_FEATURES = [
@@ -137,7 +137,7 @@ export default async function PricingPage() {
       </div>
 
       <p className="text-muted-foreground mx-auto mt-10 max-w-2xl text-center text-xs">
-        ContratCréateur est un outil d&apos;aide à la rédaction et ne constitue
+        Brandeal est un outil d&apos;aide à la rédaction et ne constitue
         pas un conseil juridique. Consultez notre{" "}
         <Link href="/legal/avertissement-juridique" className="underline">
           avertissement juridique

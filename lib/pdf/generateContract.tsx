@@ -109,7 +109,7 @@ export async function generateContractPdf(
   const doc = (
     <Document
       title={`${c.contract.title} — ${docRef}`}
-      author="ContratCréateur"
+      author="Brandeal"
     >
       <Page size="A4" style={styles.page}>
         {/* 1. En-tête */}
@@ -249,7 +249,7 @@ export async function generateContractPdf(
             fixed
             style={styles.watermark}
             render={({ pageNumber }) =>
-              pageNumber === 1 ? "Document généré avec ContratCréateur" : ""
+              pageNumber === 1 ? "Document généré avec Brandeal" : ""
             }
           />
         ) : null}
