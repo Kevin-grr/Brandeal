@@ -244,3 +244,26 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
   fausses valeurs type SIRET inventé). Les pages CGU et Avertissement affichent
   le **disclaimer exact tiré de la base** (`getActiveLegalTemplate`), avec un
   `DISCLAIMER_FALLBACK` uniquement si la DB est indisponible.
+
+---
+
+## Phase 10 — Polish & déploiement
+
+### D-034 · `nativeButton={false}` pour les boutons-liens (Base UI)
+- **Contexte** : la vérification visuelle (preview) a révélé un warning Base UI
+  répété : `<Button render={<Link/>}>` rend un `<a>` alors que `nativeButton`
+  vaut `true` par défaut (sémantique/accessibilité bouton).
+- **Décision** : ajouter `nativeButton={false}` sur tous les `<Button>` rendus
+  comme lien (`render={<Link/>}` / `render={<a/>}`). Confirmé corrigé (0 warning
+  dans le log serveur après fix).
+
+### D-035 · États de chargement / erreur + fallback police
+- **Décision** : `app/(app)/loading.tsx` (skeletons), `app/error.tsx` (boundary
+  client avec « Réessayer »), `app/not-found.tsx`. Les mutations client gèrent
+  déjà leurs erreurs via toasts. Fallback `--font-sans` (system sans-serif) si
+  Geist indisponible.
+
+### D-036 · Pas de `vercel.json`
+- **Décision** : projet Next.js standard, auto-détecté par Vercel ; aucun
+  `vercel.json` nécessaire. Procédure de déploiement (Vercel + Supabase UE +
+  Stripe) entièrement documentée dans le README.

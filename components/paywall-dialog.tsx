@@ -51,7 +51,11 @@ export function PaywallDialog({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" render={<Link href="/pricing" />}>
+          <Button
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/pricing" />}
+          >
             Voir les offres
           </Button>
           <Button onClick={upgrade} disabled={loading}>

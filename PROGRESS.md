@@ -215,4 +215,28 @@ appliquée (DB + UI). Vérification e2e = nécessite clés Stripe + Supabase.
 (aucun placeholder/lorem). Identité d'éditeur à compléter (lib/config) avant
 lancement.
 
-## ⬜ Phase 10 — Polish & déploiement
+## ✅ Phase 10 — Polish & déploiement
+
+**Fait :**
+- **Vérification visuelle réelle** (preview Next sur port dédié) : landing rendue
+  correctement en desktop **et mobile (375px)** → responsive validé. A permis de
+  détecter et corriger un warning Base UI (`nativeButton={false}` sur les
+  boutons-liens, D-034).
+- États de chargement : `app/(app)/loading.tsx` (skeletons). Gestion d'erreur :
+  `app/error.tsx` + `app/not-found.tsx` ; mutations client via toasts. Fallback
+  de police.
+- **README.md complet** : description, stack, installation locale, table des
+  variables d'env, configuration Supabase (région UE + migrations), Stripe
+  (produit/prix/webhook), Resend, déploiement Vercel pas à pas, structure,
+  limites connues.
+- Pas de `vercel.json` nécessaire (D-036).
+
+**Critère « Done » :** `npm run build` ✅, `npm test` ✅ (4/4). README permet un
+déploiement autonome.
+
+---
+
+## ⚠️ Avant lancement public
+Les modèles de contrat et de facture **doivent être relus et validés par un
+avocat ou un expert-comptable** spécialisé. ContratCréateur est un outil d'aide à
+la rédaction, pas un substitut à un conseil juridique professionnel.

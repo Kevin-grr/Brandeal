@@ -135,6 +135,7 @@ export function DealActions({
       {downloadUrl ? (
         <Button
           variant="outline"
+          nativeButton={false}
           render={<a href={downloadUrl} target="_blank" rel="noreferrer" />}
         >
           <Download className="size-4" />

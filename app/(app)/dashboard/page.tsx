@@ -90,7 +90,7 @@ export default async function DashboardPage() {
             Vos partenariats et le suivi du seuil légal par marque.
           </p>
         </div>
-        <Button render={<Link href="/deals/new" />}>
+        <Button nativeButton={false} render={<Link href="/deals/new" />}>
           <Plus className="size-4" />
           Nouveau partenariat
         </Button>
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
             <CardTitle>Aucun partenariat pour l&apos;instant</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button render={<Link href="/deals/new" />}>
+            <Button nativeButton={false} render={<Link href="/deals/new" />}>
               <Plus className="size-4" />
               Créer mon premier partenariat
             </Button>

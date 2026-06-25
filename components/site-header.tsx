@@ -11,13 +11,27 @@ export function SiteHeader() {
           {APP_NAME}
         </Link>
         <nav className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" render={<Link href="/pricing" />}>
+          <Button
+            variant="ghost"
+            size="sm"
+            nativeButton={false}
+            render={<Link href="/pricing" />}
+          >
             Tarifs
           </Button>
-          <Button variant="ghost" size="sm" render={<Link href="/login" />}>
+          <Button
+            variant="ghost"
+            size="sm"
+            nativeButton={false}
+            render={<Link href="/login" />}
+          >
             Connexion
           </Button>
-          <Button size="sm" render={<Link href="/signup" />}>
+          <Button
+            size="sm"
+            nativeButton={false}
+            render={<Link href="/signup" />}
+          >
             Créer un compte
           </Button>
         </nav>

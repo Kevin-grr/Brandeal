@@ -82,6 +82,7 @@ export default async function PricingPage() {
               <Button
                 variant="outline"
                 className="w-full"
+                nativeButton={false}
                 render={<Link href="/signup" />}
               >
                 Commencer gratuitement
@@ -90,9 +91,12 @@ export default async function PricingPage() {
               <Button
                 variant="outline"
                 className="w-full"
+                nativeButton={false}
                 render={<Link href="/dashboard" />}
               >
-                {plan === "free" ? "Votre plan actuel" : "Accéder au tableau de bord"}
+                {plan === "free"
+                  ? "Votre plan actuel"
+                  : "Accéder au tableau de bord"}
               </Button>
             )}
           </CardContent>
@@ -114,7 +118,11 @@ export default async function PricingPage() {
           <CardContent className="space-y-6">
             <FeatureList items={PRO_FEATURES} />
             {!user ? (
-              <Button className="w-full" render={<Link href="/signup" />}>
+              <Button
+                className="w-full"
+                nativeButton={false}
+                render={<Link href="/signup" />}
+              >
                 Créer un compte
               </Button>
             ) : plan === "pro" ? (

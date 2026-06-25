@@ -78,6 +78,7 @@ export function InvoiceSection({
                 <Button
                   size="sm"
                   variant="outline"
+                  nativeButton={false}
                   render={<a href={inv.url} target="_blank" rel="noreferrer" />}
                 >
                   <Download className="size-4" />

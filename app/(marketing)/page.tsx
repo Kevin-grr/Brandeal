@@ -57,10 +57,19 @@ export default function LandingPage() {
           légal de 1 000 € et facturation aux normes — sans avocat ni comptable.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button size="lg" render={<Link href="/signup" />}>
+          <Button
+            size="lg"
+            nativeButton={false}
+            render={<Link href="/signup" />}
+          >
             Créer un compte gratuit
           </Button>
-          <Button size="lg" variant="outline" render={<Link href="/pricing" />}>
+          <Button
+            size="lg"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/pricing" />}
+          >
             Voir les tarifs
           </Button>
         </div>
@@ -70,7 +79,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pourquoi c'est important */}
-      <section className="border-y bg-muted/30">
+      <section className="bg-muted/30 border-y">
         <div className="mx-auto max-w-3xl px-4 py-16">
           <h2 className="text-2xl font-semibold tracking-tight">
             Pourquoi c&apos;est important
@@ -78,11 +87,12 @@ export default function LandingPage() {
           <div className="text-muted-foreground mt-4 space-y-4">
             <p>
               Depuis le 1er janvier 2026, la loi française n°2023-451 du 9 juin
-              2023 (dite «&nbsp;loi influenceurs&nbsp;»), complétée par le décret
-              n°2025-1137, impose un <strong>contrat écrit obligatoire</strong>{" "}
-              pour toute collaboration commerciale entre un créateur et une
-              marque dès que la somme des rémunérations et avantages en nature
-              atteint <strong>1 000 € HT par annonceur et par an</strong>.
+              2023 (dite «&nbsp;loi influenceurs&nbsp;»), complétée par le
+              décret n°2025-1137, impose un{" "}
+              <strong>contrat écrit obligatoire</strong> pour toute
+              collaboration commerciale entre un créateur et une marque dès que
+              la somme des rémunérations et avantages en nature atteint{" "}
+              <strong>1 000 € HT par annonceur et par an</strong>.
             </p>
             <p>
               Sans contrat écrit, la collaboration peut être frappée de{" "}
@@ -119,7 +129,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing résumé */}
-      <section className="border-t bg-muted/30">
+      <section className="bg-muted/30 border-t">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center">
           <h2 className="text-2xl font-semibold tracking-tight">
             Un prix simple
@@ -130,7 +140,9 @@ export default function LandingPage() {
             illimités, sans watermark.
           </p>
           <div className="mt-6">
-            <Button render={<Link href="/pricing" />}>Voir les tarifs</Button>
+            <Button nativeButton={false} render={<Link href="/pricing" />}>
+              Voir les tarifs
+            </Button>
           </div>
         </div>
       </section>
