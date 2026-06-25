@@ -97,7 +97,30 @@ obligatoires. Vérification fonctionnelle = nécessite Supabase (cf. Phase 1).
 (`user_id = auth.uid()`) garantit qu'un user ne voit pas les marques d'un autre.
 Vérification fonctionnelle = nécessite Supabase.
 
-## ⬜ Phase 4 — Wizard deals + logique de seuil
+## ✅ Phase 4 — Wizard deals + logique de seuil
+
+**Fait :**
+- `lib/validations/deal.ts` : schéma Zod + constantes (plateformes, types de
+  contenu, durées d'exploitation) + superRefine (avantage en nature, exclusivité,
+  rémunération non nulle).
+- `lib/threshold.ts` + `lib/threshold.test.ts` : logique pure du seuil, **4 tests
+  node:test** (sous / au / au-dessus du seuil + avantage ignoré) — `npm test` ✅.
+- `lib/format.ts` (formatEur/formatDate), `lib/legal.ts` (template actif typé).
+- `components/deal-wizard.tsx` : wizard 5 étapes, état conservé dans RHF (pas de
+  rechargement), validation par étape, **calcul du seuil en temps réel** via la
+  RPC `get_brand_yearly_total`, barre de progression + alerte de franchissement.
+- `components/legal-disclaimer.tsx`, `components/deal-status-badge.tsx`.
+- `app/(app)/deals/new/page.tsx` (charge marques + seuil + disclaimer),
+  `app/(app)/deals/[id]/page.tsx` (détail, enrichi en Phase 5).
+- Dashboard : bouton « Nouveau partenariat ».
+- Scripts `npm test` / `npm run format`.
+
+**Décisions :** D-019 (génération PDF déplacée sur /deals/[id]), D-020 (Select
+marque), D-021 (tests node:test).
+
+**Critère « Done » :** build ✅ + tests seuil ✅ (3 scénarios requis). Création de
+deal complète. Vérification e2e = nécessite Supabase.
+
 ## ⬜ Phase 5 — Génération PDF contrat
 ## ⬜ Phase 6 — Dashboard
 ## ⬜ Phase 7 — Facturation

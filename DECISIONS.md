@@ -125,4 +125,28 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
 - **Décision** : utiliser `render` pour les triggers ; pour les confirmations de
   suppression, piloter l'`AlertDialog` en **contrôlé** (`open`/`onOpenChange`)
   car `AlertDialogAction` est un simple `Button` qui ne ferme pas le dialog.
-- **Note** : pattern à réutiliser dans le wizard (Phase 4) et au-delà.
+- **Note** : pattern réutilisé pour les boutons-liens (`<Button render={<Link/>}>`).
+
+---
+
+## Phase 4 — Wizard deals + logique de seuil
+
+### D-019 · Le wizard crée le deal ; la génération PDF se fait sur /deals/[id]
+- **Contexte** : le brief place « Générer le contrat (PDF) » sur la dernière
+  étape du wizard. La génération PDF (Phase 5) est côté serveur.
+- **Décision** : l'étape 5 du wizard **crée le deal** (status `draft`) puis
+  redirige vers `/deals/[id]`, d'où la génération/régénération du contrat sera
+  déclenchée (Phase 5). Découplage plus propre, phases indépendantes, flux
+  fonctionnellement équivalent.
+
+### D-020 · Sélection de marque : `Select` (pas autocomplete)
+- **Décision** : l'étape 1 utilise un `Select` des marques existantes + bouton
+  de création rapide inline (`BrandDialog`), au lieu d'un autocomplete. Plus
+  simple et standard ; suffisant pour le volume attendu de marques par user.
+
+### D-021 · Tests unitaires de la logique de seuil (node:test)
+- **Contexte** : le brief exige un test du calcul de seuil sur ≥ 3 scénarios.
+- **Décision** : logique extraite dans `lib/threshold.ts` (fonctions pures) et
+  testée via le runner natif **node:test** (`npm test`), 4 cas dont les 3
+  requis (sous / au / au-dessus du seuil). Fichiers `*.test.ts` exclus du
+  `next build` (tsconfig/eslint) pour ne pas casser le typecheck (import `.ts`).
