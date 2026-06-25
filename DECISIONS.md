@@ -150,3 +150,33 @@ Convention : la décision la plus simple, la plus standard, la mieux documentée
   testée via le runner natif **node:test** (`npm test`), 4 cas dont les 3
   requis (sous / au / au-dessus du seuil). Fichiers `*.test.ts` exclus du
   `next build` (tsconfig/eslint) pour ne pas casser le typecheck (import `.ts`).
+
+---
+
+## Phase 5 — Génération PDF contrat
+
+### D-022 · `generateContract.tsx` (et non `.ts`)
+- **Décision** : le moteur PDF utilise du JSX react-pdf → fichier `.tsx`
+  (`lib/pdf/generateContract.tsx`). Léger écart de nom vs le brief, imposé par le
+  JSX. Fonction exportée : `generateContractPdf()` → `Buffer`.
+
+### D-023 · Génération via route API Node + versioning
+- **Décision** : `POST /api/deals/[id]/contract` (`runtime = "nodejs"`) génère le
+  PDF, l'upload dans Storage (`{user_id}/{deal_id}/v{n}.pdf`) avec le client user
+  (les policies RLS storage cloisonnent par dossier), puis insère une ligne
+  `contracts`. La **régénération** crée une nouvelle version (n+1) → historique
+  conservé (jamais d'écrasement de l'historique en base).
+
+### D-024 · Textes légaux du PDF tirés de la base ; police intégrée
+- **Décision** : titres d'articles, mentions « droit applicable » et
+  « transparence », disclaimer, libellés de signature proviennent de
+  `legal_template_versions.mandatory_clauses` (garde-fou #1). Police **Helvetica**
+  intégrée à react-pdf (pas de police externe à charger). Formateur euro local
+  (`1 234,56 €` avec espace simple) pour éviter les glyphes d'espace fine
+  insécable absents de Helvetica.
+- **Vérifié** : smoke test react-pdf (rendu `Buffer` valide `%PDF-`, footer
+  `fixed`, watermark via `render({pageNumber})`, accents FR) OK sous Node 24.
+
+### D-025 · Téléchargement par URL signée
+- **Décision** : bucket privé ; la page de détail génère côté serveur une URL
+  signée (1 h) pour le dernier contrat et l'expose en lien de téléchargement.

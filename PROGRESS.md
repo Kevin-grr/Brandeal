@@ -121,7 +121,26 @@ marque), D-021 (tests node:test).
 **Critère « Done » :** build ✅ + tests seuil ✅ (3 scénarios requis). Création de
 deal complète. Vérification e2e = nécessite Supabase.
 
-## ⬜ Phase 5 — Génération PDF contrat
+## ✅ Phase 5 — Génération PDF contrat
+
+**Fait :**
+- `lib/pdf/generateContract.tsx` : moteur react-pdf produisant le contrat selon
+  la structure de la section 5 (en-tête + réf doc, parties avec résidence
+  fiscale, articles 1→5, signatures, **disclaimer en pied de chaque page**,
+  watermark 1ʳᵉ page si plan gratuit). Textes légaux issus de la base.
+- `app/api/deals/[id]/contract/route.ts` (POST, runtime nodejs) : génère, upload
+  Storage `{user_id}/{deal_id}/v{n}.pdf` (RLS), insère `contracts` (versioning).
+- `components/deal-actions.tsx` : statut (select), générer/régénérer le contrat,
+  télécharger (URL signée), supprimer (soft delete, AlertDialog).
+- `app/(app)/deals/[id]/page.tsx` : détail complet + dernière version + lien de
+  téléchargement signé + disclaimer.
+
+**Décisions :** D-022 à D-025.
+
+**Critère « Done » :** build ✅. **Smoke test react-pdf** : `Buffer` PDF valide
+(`%PDF-`, footer fixe, watermark conditionnel, accents FR) ✅. La génération
+end-to-end (upload Storage + DB) nécessite Supabase.
+
 ## ⬜ Phase 6 — Dashboard
 ## ⬜ Phase 7 — Facturation
 ## ⬜ Phase 8 — Stripe & paywall

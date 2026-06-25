@@ -4,9 +4,10 @@ import { notFound } from "next/navigation"
 import { requireUser } from "@/lib/auth"
 import { getActiveLegalTemplate } from "@/lib/legal"
 import { createClient } from "@/lib/supabase/server"
+import { STORAGE_BUCKETS } from "@/lib/config"
 import { formatDate, formatEur } from "@/lib/format"
 import { CONTENT_TYPES, IP_DURATIONS } from "@/lib/validations/deal"
-import type { Brand, Deal } from "@/types/database"
+import type { Brand, Contract, Deal } from "@/types/database"
 import {
   Card,
   CardContent,
@@ -14,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { DealActions } from "@/components/deal-actions"
 import { DealStatusBadge } from "@/components/deal-status-badge"
 import { LegalDisclaimer } from "@/components/legal-disclaimer"
 
@@ -40,16 +42,33 @@ export default async function DealDetailPage({
     .eq("id", id)
     .is("deleted_at", null)
     .maybeSingle<Deal>()
-
   if (!deal) notFound()
 
-  const { data: brand } = await supabase
-    .from("brands")
-    .select("*")
-    .eq("id", deal.brand_id)
-    .maybeSingle<Brand>()
+  const [{ data: brand }, { data: contract }, legal] = await Promise.all([
+    supabase
+      .from("brands")
+      .select("*")
+      .eq("id", deal.brand_id)
+      .maybeSingle<Brand>(),
+    supabase
+      .from("contracts")
+      .select("*")
+      .eq("deal_id", deal.id)
+      .is("deleted_at", null)
+      .order("generated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle<Contract>(),
+    getActiveLegalTemplate(),
+  ])
 
-  const legal = await getActiveLegalTemplate()
+  let downloadUrl: string | null = null
+  if (contract?.pdf_storage_path) {
+    const { data: signed } = await supabase.storage
+      .from(STORAGE_BUCKETS.contracts)
+      .createSignedUrl(contract.pdf_storage_path, 3600)
+    downloadUrl = signed?.signedUrl ?? null
+  }
+
   const total =
     Number(deal.cash_amount_eur ?? 0) + Number(deal.in_kind_value_eur ?? 0)
 
@@ -69,6 +88,26 @@ export default async function DealDetailPage({
           ← Retour
         </Link>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Contrat de partenariat</CardTitle>
+          <CardDescription>
+            {contract
+              ? `Dernière version générée le ${formatDate(contract.generated_at)}.`
+              : "Aucun contrat généré pour l'instant."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {legal ? <LegalDisclaimer text={legal.clauses.disclaimer} /> : null}
+          <DealActions
+            dealId={deal.id}
+            status={deal.status}
+            hasContract={!!contract}
+            downloadUrl={downloadUrl}
+          />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -105,11 +144,7 @@ export default async function DealDetailPage({
           />
           <Row
             label="Exclusivité"
-            value={
-              deal.exclusivity
-                ? deal.exclusivity_details || "Oui"
-                : "Non"
-            }
+            value={deal.exclusivity ? deal.exclusivity_details || "Oui" : "Non"}
           />
           <Row
             label="Droit applicable"
@@ -117,18 +152,6 @@ export default async function DealDetailPage({
               deal.french_law_applicable ? "Droit français" : "Non précisé"
             }
           />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Contrat</CardTitle>
-          <CardDescription>
-            La génération du PDF du contrat est branchée en Phase 5.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {legal ? <LegalDisclaimer text={legal.clauses.disclaimer} /> : null}
         </CardContent>
       </Card>
     </div>
