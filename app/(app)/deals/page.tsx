@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DealStatusBadge } from "@/components/deal-status-badge"
+import { DealDeleteButton } from "@/components/deal-delete-button"
 
 export const metadata = { title: "Partenariats" }
 
@@ -78,6 +79,7 @@ export default async function DealsPage() {
                 <TableHead className="hidden text-right sm:table-cell">
                   Date
                 </TableHead>
+                <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -101,6 +103,9 @@ export default async function DealsPage() {
                     </TableCell>
                     <TableCell className="hidden text-right sm:table-cell">
                       {formatDate(d.start_date ?? d.created_at)}
+                    </TableCell>
+                    <TableCell>
+                      <DealDeleteButton id={d.id} title={d.title} />
                     </TableCell>
                   </TableRow>
                 )
