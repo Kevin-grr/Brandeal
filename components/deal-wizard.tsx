@@ -428,25 +428,35 @@ export function DealWizard({
                       control={form.control}
                       name="content_type"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Type de contenu</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Choisir" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {CONTENT_TYPES.map((c) => (
-                                <SelectItem key={c.value} value={c.value}>
+                        <FormItem className="sm:col-span-2">
+                          <FormLabel>Types de contenu</FormLabel>
+                          <div className="flex flex-wrap gap-2">
+                            {CONTENT_TYPES.map((c) => {
+                              const selected = (field.value ?? "")
+                                .split(",")
+                                .filter(Boolean)
+                              const isChecked = selected.includes(c.value)
+                              return (
+                                <button
+                                  key={c.value}
+                                  type="button"
+                                  onClick={() => {
+                                    const next = isChecked
+                                      ? selected.filter((v) => v !== c.value)
+                                      : [...selected, c.value]
+                                    field.onChange(next.join(","))
+                                  }}
+                                  className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+                                    isChecked
+                                      ? "bg-primary text-primary-foreground border-primary"
+                                      : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                                  }`}
+                                >
                                   {c.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                                </button>
+                              )
+                            })}
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}

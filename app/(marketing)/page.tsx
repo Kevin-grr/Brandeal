@@ -51,13 +51,12 @@ export default function LandingPage() {
           Conforme à la loi n°2023-451 (loi influenceurs)
         </span>
         <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Générez des contrats de partenariat conformes à la loi influenceurs en
-          2 minutes.
+          Le copilote administratif des créateurs de contenu français.
         </h1>
         <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg text-pretty">
-          Brandeal aide les créateurs de contenu français à sécuriser
-          leurs collaborations de marque : contrats conformes, suivi du seuil
-          légal de 1 000 € et facturation aux normes — sans avocat ni comptable.
+          Contrats conformes à la loi influenceurs, suivi du seuil de 1&nbsp;000&nbsp;€,
+          facturation, devis, analyse IA des contrats entrants, relances automatiques —
+          tout ce qu&apos;un créateur ne devrait pas gérer seul.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button

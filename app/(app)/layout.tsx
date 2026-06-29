@@ -23,6 +23,7 @@ const NAV = [
   { href: "/quotes", label: "Devis" },
   { href: "/finances", label: "Finances" },
   { href: "/ai", label: "Assistant IA" },
+  { href: "/plan", label: "Mon plan" },
 ]
 
 export default async function AppLayout({

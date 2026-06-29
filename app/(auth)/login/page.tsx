@@ -123,6 +123,11 @@ function LoginForm() {
             </Button>
           </form>
         </Form>
+        <div className="text-right">
+          <Link href="/forgot-password" className="text-muted-foreground text-xs hover:text-foreground">
+            Mot de passe oublié ?
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2">
           <Separator className="flex-1" />
