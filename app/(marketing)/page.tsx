@@ -55,8 +55,8 @@ export default function LandingPage() {
         </h1>
         <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg text-pretty">
           Contrats conformes à la loi influenceurs, suivi du seuil de 1&nbsp;000&nbsp;€,
-          facturation, devis, analyse IA des contrats entrants, relances automatiques —
-          tout ce qu&apos;un créateur ne devrait pas gérer seul.
+          facturation, devis, analyse IA des contrats entrants, relances automatiques.
+          Tout ce qu&apos;un créateur ne devrait pas gérer seul.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button
@@ -100,7 +100,7 @@ export default function LandingPage() {
               Sans contrat écrit, la collaboration peut être frappée de{" "}
               <strong>nullité</strong>. Or beaucoup de créateurs gèrent leurs
               partenariats par e-mail ou DM, sans suivi du montant cumulé par
-              marque — et franchissent le seuil sans le savoir.
+              marque, et franchissent le seuil sans le savoir.
             </p>
             <p>
               Brandeal structure vos partenariats, vous prévient au bon
