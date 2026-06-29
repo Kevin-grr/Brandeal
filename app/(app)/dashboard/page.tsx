@@ -1,12 +1,14 @@
 import Link from "next/link"
-import { AlertTriangle, Plus } from "lucide-react"
+import { AlertTriangle, Info, Plus, ShieldAlert } from "lucide-react"
 
 import { requireUser } from "@/lib/auth"
 import { getActiveLegalTemplate } from "@/lib/legal"
 import { LEGAL_THRESHOLD_EUR_FALLBACK } from "@/lib/config"
 import { createClient } from "@/lib/supabase/server"
 import { formatDate, formatEur } from "@/lib/format"
-import type { Deal } from "@/types/database"
+import { buildDashboardAlerts } from "@/lib/alerts"
+import { nextUrssafDeadline } from "@/lib/fiscal"
+import type { Deal, Invoice } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -27,17 +29,20 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const year = new Date().getFullYear()
 
-  const [{ data: dealsRaw }, { data: brandsRaw }, legal] = await Promise.all([
-    supabase
-      .from("deals")
-      .select("*")
-      .is("deleted_at", null)
-      .order("created_at", { ascending: false }),
-    supabase.from("brands").select("id, name").is("deleted_at", null),
-    getActiveLegalTemplate(),
-  ])
+  const [{ data: dealsRaw }, { data: brandsRaw }, { data: invoicesRaw }, legal] =
+    await Promise.all([
+      supabase
+        .from("deals")
+        .select("*")
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false }),
+      supabase.from("brands").select("id, name").is("deleted_at", null),
+      supabase.from("invoices").select("*").is("deleted_at", null),
+      getActiveLegalTemplate(),
+    ])
 
   const deals = (dealsRaw as Deal[]) ?? []
+  const invoices = (invoicesRaw as Invoice[]) ?? []
   const brandName = new Map(
     (brandsRaw ?? []).map((b) => [b.id as string, b.name as string])
   )
@@ -77,7 +82,14 @@ export default async function DashboardPage() {
     })
   )
 
-  const alerts = brandTotals.filter((b) => b.total >= threshold && !b.hasSigned)
+  const urssaf = nextUrssafDeadline("monthly")
+  const alerts = buildDashboardAlerts({
+    deals,
+    invoices,
+    brandTotals,
+    threshold,
+    urssafDaysLeft: urssaf.daysLeft,
+  })
 
   return (
     <div className="space-y-6">
@@ -96,21 +108,41 @@ export default async function DashboardPage() {
         </Button>
       </div>
 
-      {/* Bandeaux d'alerte de seuil */}
-      {alerts.map((b) => (
-        <div
-          key={b.brandId}
-          className="flex items-start gap-2 rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
-          role="alert"
-        >
-          <AlertTriangle className="mt-0.5 size-4 shrink-0" />
-          <p>
-            ⚠️ Le seuil légal de {formatEur(threshold)} est atteint avec{" "}
-            <strong>{b.name}</strong>. Un contrat écrit est obligatoire (sous
-            peine de nullité) — pensez à en générer un.
-          </p>
+      {/* Alertes proactives (dashboard intelligent) */}
+      {alerts.length > 0 && (
+        <div className="space-y-2">
+          {alerts.map((a) => {
+            const styles =
+              a.severity === "critical"
+                ? "border-red-300 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-200"
+                : a.severity === "warning"
+                  ? "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200"
+                  : "border-border bg-muted/40 text-foreground"
+            const Icon =
+              a.severity === "critical"
+                ? ShieldAlert
+                : a.severity === "warning"
+                  ? AlertTriangle
+                  : Info
+            const content = (
+              <div
+                className={`flex items-start gap-2 rounded-md border p-3 text-sm ${styles}`}
+                role="alert"
+              >
+                <Icon className="mt-0.5 size-4 shrink-0" />
+                <p>{a.message}</p>
+              </div>
+            )
+            return a.href ? (
+              <Link key={a.id} href={a.href} className="block">
+                {content}
+              </Link>
+            ) : (
+              <div key={a.id}>{content}</div>
+            )
+          })}
         </div>
-      ))}
+      )}
 
       {/* Encarts de suivi par marque */}
       {brandTotals.length > 0 && (

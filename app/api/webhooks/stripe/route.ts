@@ -20,6 +20,18 @@ function customerId(
   return typeof c === "string" ? c : c.id
 }
 
+function planFromPriceId(priceId: string): Exclude<Plan, "free"> {
+  const map: Record<string, Exclude<Plan, "free">> = {
+    [process.env.STRIPE_PRICE_ID_CREATOR ?? ""]: "creator",
+    [process.env.STRIPE_PRICE_ID_CREATOR_ANNUAL ?? ""]: "creator",
+    [process.env.STRIPE_PRICE_ID_STUDIO ?? ""]: "studio",
+    [process.env.STRIPE_PRICE_ID_STUDIO_ANNUAL ?? ""]: "studio",
+    [process.env.STRIPE_PRICE_ID_EXPERT ?? ""]: "expert",
+    [process.env.STRIPE_PRICE_ID_EXPERT_ANNUAL ?? ""]: "expert",
+  }
+  return map[priceId] ?? "creator"
+}
+
 export async function POST(req: Request) {
   const body = await req.text()
   const sig = req.headers.get("stripe-signature")
@@ -43,17 +55,22 @@ export async function POST(req: Request) {
     case "checkout.session.completed": {
       const s = event.data.object as Stripe.Checkout.Session
       const userId = s.client_reference_id
-      if (userId) {
+      if (userId && s.subscription) {
+        // Récupère la subscription pour connaître le price ID exact.
+        const stripeSub = await stripe.subscriptions.retrieve(
+          typeof s.subscription === "string" ? s.subscription : s.subscription.id,
+          { expand: ["items.data.price"] }
+        )
+        const priceId = stripeSub.items.data[0]?.price?.id ?? ""
+        const plan = planFromPriceId(priceId)
+
         await admin.from("subscriptions").upsert(
           {
             user_id: userId,
-            plan: "pro" as Plan,
+            plan: plan as Plan,
             status: "active",
             stripe_customer_id: customerId(s.customer),
-            stripe_subscription_id:
-              typeof s.subscription === "string"
-                ? s.subscription
-                : (s.subscription?.id ?? null),
+            stripe_subscription_id: stripeSub.id,
           },
           { onConflict: "user_id" }
         )
@@ -67,8 +84,12 @@ export async function POST(req: Request) {
       const isActive =
         event.type !== "customer.subscription.deleted" &&
         (sub.status === "active" || sub.status === "trialing")
+
+      const priceId = sub.items.data[0]?.price?.id ?? ""
+      const activePlan = planFromPriceId(priceId)
+
       const update = {
-        plan: (isActive ? "pro" : "free") as Plan,
+        plan: (isActive ? activePlan : "free") as Plan,
         status: sub.status,
         stripe_subscription_id: sub.id,
         stripe_customer_id: customerId(sub.customer),

@@ -1,8 +1,11 @@
 import Link from "next/link"
 import { FileCheck2, Gauge, Receipt, ShieldCheck } from "lucide-react"
 
-import { formatEur } from "@/lib/format"
-import { PRO_PRICE_EUR } from "@/lib/config"
+import {
+  CREATOR_PRICE_EUR,
+  STUDIO_PRICE_EUR,
+  EXPERT_PRICE_EUR,
+} from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -132,12 +135,16 @@ export default function LandingPage() {
       <section className="bg-muted/30 border-t">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center">
           <h2 className="text-2xl font-semibold tracking-tight">
-            Un prix simple
+            Gratuit pour démarrer, puissant pour scaler
           </h2>
           <p className="text-muted-foreground mt-3">
-            Démarrez gratuitement (2 contrats/mois). Passez au Pro à{" "}
-            {formatEur(PRO_PRICE_EUR)}/mois pour des contrats et factures
-            illimités, sans watermark.
+            Le suivi du seuil légal est gratuit à vie. Passez au plan{" "}
+            <strong>Créateur</strong> à {CREATOR_PRICE_EUR}&nbsp;€/mois pour
+            des contrats illimités, au plan <strong>Studio</strong> à{" "}
+            {STUDIO_PRICE_EUR}&nbsp;€/mois pour la signature électronique et les
+            relances automatiques, ou au plan <strong>Expert</strong> à{" "}
+            {EXPERT_PRICE_EUR}&nbsp;€/mois pour l&apos;analyse IA de vos
+            contrats entrants.
           </p>
           <div className="mt-6">
             <Button nativeButton={false} render={<Link href="/pricing" />}>

@@ -3,10 +3,29 @@ import { NextResponse } from "next/server"
 import { SITE_URL } from "@/lib/config"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
+import type { Plan } from "@/types/database"
 
 export const runtime = "nodejs"
 
-export async function POST() {
+type PaidPlan = Exclude<Plan, "free">
+
+const PRICE_IDS: Record<PaidPlan, Record<"month" | "year", string | undefined>> =
+  {
+    creator: {
+      month: process.env.STRIPE_PRICE_ID_CREATOR,
+      year: process.env.STRIPE_PRICE_ID_CREATOR_ANNUAL,
+    },
+    studio: {
+      month: process.env.STRIPE_PRICE_ID_STUDIO,
+      year: process.env.STRIPE_PRICE_ID_STUDIO_ANNUAL,
+    },
+    expert: {
+      month: process.env.STRIPE_PRICE_ID_EXPERT,
+      year: process.env.STRIPE_PRICE_ID_EXPERT_ANNUAL,
+    },
+  }
+
+export async function POST(request: Request) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -15,10 +34,25 @@ export async function POST() {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 })
   }
 
-  const priceId = process.env.STRIPE_PRICE_ID_PRO
+  const body = (await request.json().catch(() => ({}))) as {
+    plan?: string
+    interval?: string
+  }
+
+  const plan = (body.plan ?? "creator") as PaidPlan
+  const interval: "month" | "year" =
+    body.interval === "year" ? "year" : "month"
+
+  if (!["creator", "studio", "expert"].includes(plan)) {
+    return NextResponse.json({ error: "Plan inconnu." }, { status: 400 })
+  }
+
+  const priceId = PRICE_IDS[plan][interval]
   if (!priceId) {
     return NextResponse.json(
-      { error: "Offre Pro non configurée (STRIPE_PRICE_ID_PRO)." },
+      {
+        error: `Offre ${plan} (${interval}) non configurée — vérifiez les variables STRIPE_PRICE_ID_*.`,
+      },
       { status: 500 }
     )
   }

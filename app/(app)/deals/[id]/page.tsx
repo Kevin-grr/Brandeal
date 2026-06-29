@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server"
 import { STORAGE_BUCKETS } from "@/lib/config"
 import { formatDate, formatEur } from "@/lib/format"
 import { CONTENT_TYPES, IP_DURATIONS } from "@/lib/validations/deal"
-import type { Brand, Contract, Deal, Invoice } from "@/types/database"
+import type { Brand, Contract, Deal, Invoice, Quote } from "@/types/database"
 import {
   Card,
   CardContent,
@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/card"
 import { DealActions } from "@/components/deal-actions"
 import { DealStatusBadge } from "@/components/deal-status-badge"
+import { DealTimeline, type DealTimelineData } from "@/components/deal-timeline"
 import { InvoiceSection } from "@/components/invoice-section"
 import { LegalDisclaimer } from "@/components/legal-disclaimer"
+import { ShareDealCard } from "@/components/share-deal-card"
 
 function labelOf(
   list: readonly { value: string; label: string }[],
@@ -70,12 +72,19 @@ export default async function DealDetailPage({
     downloadUrl = signed?.signedUrl ?? null
   }
 
-  const { data: invoicesRaw } = await supabase
-    .from("invoices")
-    .select("*")
-    .eq("deal_id", deal.id)
-    .is("deleted_at", null)
-    .order("created_at", { ascending: false })
+  const [{ data: invoicesRaw }, { data: quotesRaw }] = await Promise.all([
+    supabase
+      .from("invoices")
+      .select("*")
+      .eq("deal_id", deal.id)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("quotes")
+      .select("*")
+      .eq("deal_id", deal.id)
+      .is("deleted_at", null),
+  ])
 
   const invoices = await Promise.all(
     ((invoicesRaw as Invoice[]) ?? []).map(async (inv) => {
@@ -99,6 +108,41 @@ export default async function DealDetailPage({
   const total =
     Number(deal.cash_amount_eur ?? 0) + Number(deal.in_kind_value_eur ?? 0)
 
+  // --- Données de la timeline (assistant partenariat) ---
+  const quotes = (quotesRaw as Quote[]) ?? []
+  const invoicesAll = (invoicesRaw as Invoice[]) ?? []
+  const sentInvoice = invoicesAll.find(
+    (i) => i.status === "sent" || i.status === "paid"
+  )
+  const signedAt =
+    deal.signed_at ??
+    (deal.status === "signed" || deal.status === "paid"
+      ? deal.updated_at
+      : null)
+  const paidAt =
+    deal.paid_at ?? (deal.status === "paid" ? deal.updated_at : null)
+  const sentAt = sentInvoice?.issue_date ?? deal.sent_at ?? null
+  let daysUnpaid: number | null = null
+  if (!paidAt && sentAt) {
+    daysUnpaid = Math.max(
+      0,
+      Math.round(
+        (Date.now() - new Date(sentAt).getTime()) / (1000 * 60 * 60 * 24)
+      )
+    )
+  }
+  const timeline: DealTimelineData = {
+    hasQuote: quotes.length > 0,
+    quoteAccepted: quotes.some((q) => q.status === "accepted"),
+    hasContract: !!contract,
+    signedAt,
+    publishedAt: deal.published_at,
+    hasInvoice: invoicesAll.length > 0,
+    sentAt,
+    paidAt,
+    daysUnpaid,
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -111,10 +155,22 @@ export default async function DealDetailPage({
           </div>
           <p className="text-muted-foreground">{brand?.name ?? "Marque"}</p>
         </div>
-        <Link href="/dashboard" className="text-sm underline">
+        <Link href="/deals" className="text-sm underline">
           ← Retour
         </Link>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Suivi du partenariat</CardTitle>
+          <CardDescription>
+            De l&apos;accord au paiement, en un coup d&apos;œil.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DealTimeline data={timeline} />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -152,6 +208,8 @@ export default async function DealDetailPage({
           />
         </CardContent>
       </Card>
+
+      <ShareDealCard dealId={deal.id} />
 
       <Card>
         <CardHeader>

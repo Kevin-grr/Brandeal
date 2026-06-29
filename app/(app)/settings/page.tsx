@@ -1,8 +1,9 @@
 import { requireUser } from "@/lib/auth"
 import { getProfile } from "@/lib/profile"
 import { createClient } from "@/lib/supabase/server"
-import type { Plan } from "@/types/database"
+import type { CreatorProfile, Plan } from "@/types/database"
 import { ProfileForm } from "@/components/profile-form"
+import { ProfilesManager } from "@/components/profiles-manager"
 import { SubscriptionSection } from "@/components/subscription-section"
 import {
   Card,
@@ -19,11 +20,18 @@ export default async function SettingsPage() {
   const profile = await getProfile()
 
   const supabase = await createClient()
-  const { data: sub } = await supabase
-    .from("subscriptions")
-    .select("plan")
-    .eq("user_id", user.id)
-    .maybeSingle()
+  const [{ data: sub }, { data: creatorProfiles }] = await Promise.all([
+    supabase
+      .from("subscriptions")
+      .select("plan")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("creator_profiles")
+      .select("*")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: true }),
+  ])
   const plan: Plan = (sub?.plan as Plan) ?? "free"
 
   return (
@@ -44,6 +52,22 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent>
           <ProfileForm mode="settings" initial={profile} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Profils créateurs</CardTitle>
+          <CardDescription>
+            Plusieurs identités pour les managers et agences.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProfilesManager
+            plan={plan}
+            ownerId={user.id}
+            profiles={(creatorProfiles as CreatorProfile[]) ?? []}
+          />
         </CardContent>
       </Card>
 

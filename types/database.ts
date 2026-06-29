@@ -22,7 +22,19 @@ export type LegalStatus =
 
 export type DealStatus = "draft" | "sent" | "signed" | "paid" | "cancelled"
 export type InvoiceStatus = "draft" | "sent" | "paid"
-export type Plan = "free" | "pro"
+export type QuoteStatus =
+  | "draft"
+  | "sent"
+  | "accepted"
+  | "refused"
+  | "expired"
+export type ReviewStatus = "pending" | "processing" | "done" | "error"
+export type ReviewBalance =
+  | "favorable_brand"
+  | "balanced"
+  | "favorable_creator"
+export type SignerRole = "creator" | "advertiser"
+export type Plan = "free" | "creator" | "studio" | "expert"
 
 export type Database = {
   public: {
@@ -140,6 +152,12 @@ export type Database = {
           exclusivity: boolean | null
           exclusivity_details: string | null
           french_law_applicable: boolean | null
+          template_kind: string | null
+          sent_at: string | null
+          signed_at: string | null
+          published_at: string | null
+          paid_at: string | null
+          creator_profile_id: string | null
           deleted_at: string | null
           created_at: string | null
           updated_at: string | null
@@ -163,6 +181,12 @@ export type Database = {
           exclusivity?: boolean | null
           exclusivity_details?: string | null
           french_law_applicable?: boolean | null
+          template_kind?: string | null
+          sent_at?: string | null
+          signed_at?: string | null
+          published_at?: string | null
+          paid_at?: string | null
+          creator_profile_id?: string | null
           deleted_at?: string | null
           created_at?: string | null
           updated_at?: string | null
@@ -186,6 +210,12 @@ export type Database = {
           exclusivity?: boolean | null
           exclusivity_details?: string | null
           french_law_applicable?: boolean | null
+          template_kind?: string | null
+          sent_at?: string | null
+          signed_at?: string | null
+          published_at?: string | null
+          paid_at?: string | null
+          creator_profile_id?: string | null
           deleted_at?: string | null
           created_at?: string | null
           updated_at?: string | null
@@ -333,6 +363,309 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_profiles: {
+        Row: {
+          id: string
+          owner_id: string
+          display_name: string
+          full_name: string | null
+          legal_status: LegalStatus | null
+          siret: string | null
+          is_vat_applicable: boolean | null
+          address_line: string | null
+          postal_code: string | null
+          city: string | null
+          country: string | null
+          is_default: boolean | null
+          deleted_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          owner_id: string
+          display_name: string
+          full_name?: string | null
+          legal_status?: LegalStatus | null
+          siret?: string | null
+          is_vat_applicable?: boolean | null
+          address_line?: string | null
+          postal_code?: string | null
+          city?: string | null
+          country?: string | null
+          is_default?: boolean | null
+          deleted_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          owner_id?: string
+          display_name?: string
+          full_name?: string | null
+          legal_status?: LegalStatus | null
+          siret?: string | null
+          is_vat_applicable?: boolean | null
+          address_line?: string | null
+          postal_code?: string | null
+          city?: string | null
+          country?: string | null
+          is_default?: boolean | null
+          deleted_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      contract_templates: {
+        Row: {
+          id: string
+          kind: string
+          name: string
+          description: string
+          icon: string | null
+          defaults: Json
+          sort_order: number
+          is_active: boolean | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          kind: string
+          name: string
+          description: string
+          icon?: string | null
+          defaults?: Json
+          sort_order?: number
+          is_active?: boolean | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          kind?: string
+          name?: string
+          description?: string
+          icon?: string | null
+          defaults?: Json
+          sort_order?: number
+          is_active?: boolean | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      quotes: {
+        Row: {
+          id: string
+          user_id: string
+          deal_id: string | null
+          brand_id: string | null
+          quote_number: string
+          issue_date: string
+          valid_until: string | null
+          amount_ht: number
+          vat_rate: number | null
+          vat_mention: string | null
+          notes: string | null
+          status: QuoteStatus
+          pdf_storage_path: string | null
+          accepted_at: string | null
+          deleted_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          deal_id?: string | null
+          brand_id?: string | null
+          quote_number: string
+          issue_date?: string
+          valid_until?: string | null
+          amount_ht?: number
+          vat_rate?: number | null
+          vat_mention?: string | null
+          notes?: string | null
+          status?: QuoteStatus
+          pdf_storage_path?: string | null
+          accepted_at?: string | null
+          deleted_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          deal_id?: string | null
+          brand_id?: string | null
+          quote_number?: string
+          issue_date?: string
+          valid_until?: string | null
+          amount_ht?: number
+          vat_rate?: number | null
+          vat_mention?: string | null
+          notes?: string | null
+          status?: QuoteStatus
+          pdf_storage_path?: string | null
+          accepted_at?: string | null
+          deleted_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      contract_reviews: {
+        Row: {
+          id: string
+          user_id: string
+          brand_id: string | null
+          source_filename: string | null
+          source_text: string | null
+          status: ReviewStatus
+          score: number | null
+          balance: ReviewBalance | null
+          summary: string | null
+          findings: Json | null
+          missing_mentions: Json | null
+          error_message: string | null
+          deleted_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          brand_id?: string | null
+          source_filename?: string | null
+          source_text?: string | null
+          status?: ReviewStatus
+          score?: number | null
+          balance?: ReviewBalance | null
+          summary?: string | null
+          findings?: Json | null
+          missing_mentions?: Json | null
+          error_message?: string | null
+          deleted_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          brand_id?: string | null
+          source_filename?: string | null
+          source_text?: string | null
+          status?: ReviewStatus
+          score?: number | null
+          balance?: ReviewBalance | null
+          summary?: string | null
+          findings?: Json | null
+          missing_mentions?: Json | null
+          error_message?: string | null
+          deleted_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      brand_share_tokens: {
+        Row: {
+          id: string
+          user_id: string
+          deal_id: string
+          token: string
+          expires_at: string | null
+          revoked_at: string | null
+          last_viewed_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          deal_id: string
+          token: string
+          expires_at?: string | null
+          revoked_at?: string | null
+          last_viewed_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          deal_id?: string
+          token?: string
+          expires_at?: string | null
+          revoked_at?: string | null
+          last_viewed_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      contract_signatures: {
+        Row: {
+          id: string
+          contract_id: string
+          deal_id: string
+          signer_role: SignerRole
+          signer_name: string
+          signer_email: string | null
+          signature_data: string | null
+          provider: string | null
+          provider_ref: string | null
+          signed_ip: string | null
+          signed_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          contract_id: string
+          deal_id: string
+          signer_role: SignerRole
+          signer_name: string
+          signer_email?: string | null
+          signature_data?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          signed_ip?: string | null
+          signed_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          contract_id?: string
+          deal_id?: string
+          signer_role?: SignerRole
+          signer_name?: string
+          signer_email?: string | null
+          signature_data?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          signed_ip?: string | null
+          signed_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      payment_reminders: {
+        Row: {
+          id: string
+          user_id: string
+          invoice_id: string
+          step: number
+          channel: string
+          sent_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          invoice_id: string
+          step: number
+          channel?: string
+          sent_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          invoice_id?: string
+          step?: number
+          channel?: string
+          sent_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: Record<never, never>
     Functions: {
@@ -349,6 +682,18 @@ export type Database = {
         }
         Returns: Database["public"]["Tables"]["invoices"]["Row"]
       }
+      create_quote: {
+        Args: {
+          p_brand_id: string
+          p_deal_id: string
+          p_amount_ht: number
+          p_vat_rate: number
+          p_vat_mention: string
+          p_valid_until: string
+          p_notes: string
+        }
+        Returns: Database["public"]["Tables"]["quotes"]["Row"]
+      }
     }
     Enums: Record<never, never>
     CompositeTypes: Record<never, never>
@@ -364,6 +709,27 @@ export type Invoice = Database["public"]["Tables"]["invoices"]["Row"]
 export type Subscription = Database["public"]["Tables"]["subscriptions"]["Row"]
 export type LegalTemplateVersion =
   Database["public"]["Tables"]["legal_template_versions"]["Row"]
+export type CreatorProfile =
+  Database["public"]["Tables"]["creator_profiles"]["Row"]
+export type ContractTemplate =
+  Database["public"]["Tables"]["contract_templates"]["Row"]
+export type Quote = Database["public"]["Tables"]["quotes"]["Row"]
+export type ContractReview =
+  Database["public"]["Tables"]["contract_reviews"]["Row"]
+export type BrandShareToken =
+  Database["public"]["Tables"]["brand_share_tokens"]["Row"]
+export type ContractSignature =
+  Database["public"]["Tables"]["contract_signatures"]["Row"]
+export type PaymentReminder =
+  Database["public"]["Tables"]["payment_reminders"]["Row"]
+
+/** Une anomalie détectée par l'analyse IA d'un contrat entrant. */
+export type ReviewFinding = {
+  severity: "info" | "warning" | "critical"
+  title: string
+  detail: string
+  clause?: string
+}
 
 /**
  * Forme typée du JSON `mandatory_clauses` (seed `legal_template_versions`).

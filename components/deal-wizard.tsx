@@ -18,7 +18,7 @@ import {
   PLATFORMS,
   type DealFormValues,
 } from "@/lib/validations/deal"
-import type { Brand } from "@/types/database"
+import type { Brand, ContractTemplate, Profile } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -49,7 +49,9 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { BrandDialog } from "@/components/brand-dialog"
 import { LegalDisclaimer } from "@/components/legal-disclaimer"
+import { LegalCheckPanel } from "@/components/legal-check-panel"
 import { PaywallDialog } from "@/components/paywall-dialog"
+import { TemplatePicker } from "@/components/template-picker"
 
 const STEPS = [
   "Marque",
@@ -83,12 +85,16 @@ export function DealWizard({
   threshold,
   disclaimer,
   atLimit = false,
+  templates = [],
+  profile = null,
 }: {
   brands: Brand[]
   userId: string
   threshold: number
   disclaimer: string
   atLimit?: boolean
+  templates?: ContractTemplate[]
+  profile?: Profile | null
 }) {
   const router = useRouter()
   const [step, setStep] = useState(0)
@@ -96,6 +102,20 @@ export function DealWizard({
   const [existingTotal, setExistingTotal] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [paywallOpen, setPaywallOpen] = useState(false)
+  const [templateKind, setTemplateKind] = useState<string | null>(null)
+
+  function applyTemplate(t: ContractTemplate) {
+    setTemplateKind(t.kind)
+    const d = (t.defaults ?? {}) as Record<string, unknown>
+    if (typeof d.ip_rights_duration === "string")
+      form.setValue("ip_rights_duration", d.ip_rights_duration)
+    if (typeof d.content_type === "string")
+      form.setValue("content_type", d.content_type)
+    if (typeof d.exclusivity === "boolean")
+      form.setValue("exclusivity", d.exclusivity)
+    if (typeof d.exclusivity_details === "string")
+      form.setValue("exclusivity_details", d.exclusivity_details)
+  }
 
   const form = useForm<DealFormValues>({
     resolver: zodResolver(dealSchema),
@@ -201,6 +221,7 @@ export function DealWizard({
           ? values.exclusivity_details || null
           : null,
         french_law_applicable: values.french_law_applicable,
+        template_kind: templateKind,
       })
       .select("id")
       .single()
@@ -286,6 +307,11 @@ export function DealWizard({
               {/* ÉTAPE 1 — Marque */}
               {step === 0 && (
                 <div className="space-y-4">
+                  <TemplatePicker
+                    templates={templates}
+                    selectedKind={templateKind}
+                    onSelect={applyTemplate}
+                  />
                   <FormField
                     control={form.control}
                     name="brand_id"
@@ -753,6 +779,14 @@ export function DealWizard({
                   <RecapRow
                     label={`Total cumulé ${selectedBrand?.name ?? ""} ${year}`}
                     value={formatEur(newTotal)}
+                  />
+
+                  <LegalCheckPanel
+                    deal={form.getValues()}
+                    brand={selectedBrand}
+                    profile={profile}
+                    yearlyTotal={existingTotal ?? 0}
+                    threshold={threshold}
                   />
 
                   <LegalDisclaimer text={disclaimer} />

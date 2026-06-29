@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Pencil, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
@@ -159,7 +160,12 @@ export function BrandsManager({ brands }: { brands: Brand[] }) {
               {brands.map((brand) => (
                 <TableRow key={brand.id}>
                   <TableCell className="font-medium">
-                    {brand.name}
+                    <Link
+                      href={`/brands/${brand.id}`}
+                      className="hover:underline"
+                    >
+                      {brand.name}
+                    </Link>
                     {brand.legal_name ? (
                       <span className="text-muted-foreground block text-xs">
                         {brand.legal_name}
