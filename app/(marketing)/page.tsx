@@ -1,5 +1,17 @@
 import Link from "next/link"
-import { FileCheck2, Gauge, Receipt, ShieldCheck } from "lucide-react"
+import {
+  AlertTriangle,
+  Bot,
+  FileCheck2,
+  FileText,
+  Gauge,
+  Lock,
+  Receipt,
+  Server,
+  ShieldCheck,
+  Signature,
+  Zap,
+} from "lucide-react"
 
 import {
   CREATOR_PRICE_EUR,
@@ -10,36 +22,78 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+
+const STEPS = [
+  {
+    n: "01",
+    title: "Déposez le contrat de la marque",
+    desc: "Glissez le PDF reçu par email. Brandeal le lit à votre place en quelques secondes.",
+  },
+  {
+    n: "02",
+    title: "L'IA détecte les clauses risquées",
+    desc: "Exclusivités cachées, droits d'exploitation abusifs, paiements non garantis — tout est signalé.",
+  },
+  {
+    n: "03",
+    title: "Générez votre contre-contrat conforme",
+    desc: "Un contrat aux normes de la loi influenceurs est créé en 2 minutes avec toutes les mentions obligatoires.",
+  },
+  {
+    n: "04",
+    title: "Signature électronique et envoi",
+    desc: "La marque signe directement en ligne. Vous gardez une copie horodatée.",
+  },
+  {
+    n: "05",
+    title: "Facture générée automatiquement",
+    desc: "Numérotation séquentielle, mentions légales, suivi du seuil de 1 000 € par marque.",
+  },
+]
 
 const FEATURES = [
   {
     icon: FileCheck2,
     title: "Contrats conformes en 2 minutes",
-    description:
-      "Un assistant guidé génère un contrat de partenariat reprenant les mentions obligatoires de l'article 8 de la loi influenceurs.",
+    desc: "Toutes les mentions obligatoires de l'article 8 de la loi influenceurs, générées automatiquement.",
+  },
+  {
+    icon: Bot,
+    title: "Analyse IA des contrats entrants",
+    desc: "Déposez le PDF de la marque. L'IA détecte les exclusivités, droits d'exploitation et clauses dangereuses.",
   },
   {
     icon: Gauge,
     title: "Suivi du seuil de 1 000 €",
-    description:
-      "Le montant cumulé par marque et par an est calculé automatiquement, avec une alerte dès que le seuil légal est atteint.",
+    desc: "Alerte automatique dès que le cumul par marque et par an approche du seuil légal.",
   },
   {
     icon: Receipt,
-    title: "Facturation aux normes françaises",
-    description:
-      "Générez des factures avec numérotation séquentielle et les mentions obligatoires (dont « TVA non applicable, art. 293 B »).",
+    title: "Facturation aux normes",
+    desc: "Factures avec numérotation séquentielle et mentions obligatoires pour micro-entrepreneurs.",
   },
   {
-    icon: ShieldCheck,
-    title: "Pensé pour les créateurs FR",
-    description:
-      "Spécialisé micro-entrepreneurs : statut, franchise de TVA, droit applicable. Tout en français.",
+    icon: Signature,
+    title: "Signature électronique",
+    desc: "Faites signer vos contrats en ligne. Copie horodatée conservée automatiquement.",
   },
+  {
+    icon: Zap,
+    title: "Relances automatiques",
+    desc: "Plus jamais de facture impayée oubliée. Les relances partent seules au bon moment.",
+  },
+]
+
+const TRUST = [
+  { icon: ShieldCheck, label: "Conforme à la loi n°2023-451" },
+  { icon: Server, label: "Données hébergées en Europe (RGPD)" },
+  { icon: FileText, label: "Documents conservés sans suppression" },
+  { icon: Lock, label: "Chiffrement de bout en bout" },
+  { icon: Bot, label: "IA spécialisée créateurs français" },
+  { icon: AlertTriangle, label: "Alertes légales en temps réel" },
 ]
 
 export default function LandingPage() {
@@ -48,15 +102,13 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="mx-auto max-w-5xl px-4 py-20 text-center">
         <span className="bg-muted text-muted-foreground inline-block rounded-full px-3 py-1 text-xs font-medium">
-          Conforme à la loi n°2023-451 (loi influenceurs)
+          Conforme à la loi n°2023-451 — loi influenceurs
         </span>
         <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Le copilote administratif des créateurs de contenu français.
+          Le seul outil dont un créateur a besoin pour gérer ses collaborations avec les marques.
         </h1>
         <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg text-pretty">
-          Contrats conformes à la loi influenceurs, suivi du seuil de 1&nbsp;000&nbsp;€,
-          facturation, devis, analyse IA des contrats entrants, relances automatiques.
-          Tout ce qu&apos;un créateur ne devrait pas gérer seul.
+          Brandeal gère toute l&apos;administration de vos partenariats : contrats conformes, analyse IA, factures, relances et suivi légal. Vous vous concentrez sur votre contenu.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button
@@ -80,77 +132,178 @@ export default function LandingPage() {
         </p>
       </section>
 
-      {/* Pourquoi c'est important */}
-      <section className="bg-muted/30 border-y">
-        <div className="mx-auto max-w-3xl px-4 py-16">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Pourquoi c&apos;est important
+      {/* Stats */}
+      <section className="border-y bg-muted/30">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-4 py-10 text-center sm:grid-cols-4">
+          {[
+            { value: "2 min", label: "pour générer un contrat conforme" },
+            { value: "1 000 €", label: "seuil légal suivi automatiquement" },
+            { value: "100%", label: "hébergement Europe (RGPD)" },
+            { value: "0 avocat", label: "nécessaire pour démarrer" },
+          ].map((s) => (
+            <div key={s.label}>
+              <p className="text-primary text-3xl font-semibold">{s.value}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Screenshot placeholder */}
+      <section className="mx-auto max-w-5xl px-4 py-16">
+        <div className="bg-muted/40 border-border flex aspect-video w-full items-center justify-center rounded-2xl border-2 border-dashed">
+          <div className="text-center">
+            <p className="text-muted-foreground text-sm font-medium">Capture d&apos;écran du dashboard</p>
+            <p className="text-muted-foreground mt-1 text-xs">À remplacer par un screenshot de l&apos;app</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Comment ça marche */}
+      <section className="border-t bg-muted/30">
+        <div className="mx-auto max-w-5xl px-4 py-16">
+          <h2 className="text-center text-2xl font-semibold tracking-tight">
+            De la réception du contrat à la facture payée
           </h2>
-          <div className="text-muted-foreground mt-4 space-y-4">
-            <p>
-              Depuis le 1er janvier 2026, la loi française n°2023-451 du 9 juin
-              2023 (dite «&nbsp;loi influenceurs&nbsp;»), complétée par le
-              décret n°2025-1137, impose un{" "}
-              <strong>contrat écrit obligatoire</strong> pour toute
-              collaboration commerciale entre un créateur et une marque dès que
-              la somme des rémunérations et avantages en nature atteint{" "}
-              <strong>1 000 € HT par annonceur et par an</strong>.
+          <p className="text-muted-foreground mt-2 text-center text-sm">
+            En moins de 10 minutes, tout est géré.
+          </p>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {STEPS.map((s) => (
+              <div key={s.n} className="flex gap-4">
+                <span className="text-primary shrink-0 text-2xl font-bold">{s.n}</span>
+                <div>
+                  <p className="font-medium">{s.title}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bloc IA */}
+      <section className="mx-auto max-w-5xl px-4 py-16">
+        <div className="bg-primary/5 border-primary/20 rounded-2xl border p-8 sm:p-12">
+          <div className="mx-auto max-w-2xl text-center">
+            <Bot className="text-primary mx-auto size-10" />
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight">
+              L&apos;IA lit vos contrats à votre place
+            </h2>
+            <p className="text-muted-foreground mt-3">
+              Déposez le PDF envoyé par une marque. Brandeal détecte automatiquement les clauses qui vous engagent.
             </p>
-            <p>
-              Sans contrat écrit, la collaboration peut être frappée de{" "}
-              <strong>nullité</strong>. Or beaucoup de créateurs gèrent leurs
-              partenariats par e-mail ou DM, sans suivi du montant cumulé par
-              marque, et franchissent le seuil sans le savoir.
-            </p>
-            <p>
-              Brandeal structure vos partenariats, vous prévient au bon
-              moment et génère les documents nécessaires. C&apos;est un{" "}
-              <strong>outil d&apos;aide à la rédaction</strong>, pas un
-              substitut à un conseil juridique professionnel.
-            </p>
+          </div>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            {[
+              "Exclusivités cachées et leur durée",
+              "Droits d'exploitation de vos vidéos",
+              "Absence de garantie de paiement",
+              "Clauses de résiliation abusives",
+              "Obligations non mentionnées oralement",
+              "Risques juridiques selon la loi française",
+            ].map((item) => (
+              <div key={item} className="flex items-start gap-2">
+                <ShieldCheck className="text-primary mt-0.5 size-4 shrink-0" />
+                <span className="text-sm">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="bg-muted/40 border-border mt-8 flex aspect-video w-full items-center justify-center rounded-xl border-2 border-dashed">
+            <p className="text-muted-foreground text-xs">Screenshot de l&apos;analyse IA à ajouter ici</p>
           </div>
         </div>
       </section>
 
       {/* Fonctionnalités */}
-      <section className="mx-auto max-w-5xl px-4 py-16">
-        <h2 className="text-center text-2xl font-semibold tracking-tight">
-          Tout ce qu&apos;il faut pour être en règle
-        </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {FEATURES.map((f) => (
-            <Card key={f.title}>
-              <CardHeader>
-                <f.icon className="text-primary size-6" />
-                <CardTitle className="mt-2 text-base">{f.title}</CardTitle>
-                <CardDescription>{f.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
+      <section className="border-t bg-muted/30">
+        <div className="mx-auto max-w-5xl px-4 py-16">
+          <h2 className="text-center text-2xl font-semibold tracking-tight">
+            Tout ce dont vous avez besoin, dans un seul outil
+          </h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((f) => (
+              <Card key={f.title}>
+                <CardHeader>
+                  <f.icon className="text-primary size-6" />
+                  <CardTitle className="mt-2 text-base">{f.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground text-sm">{f.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Pricing résumé */}
-      <section className="bg-muted/30 border-t">
-        <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Gratuit pour démarrer, puissant pour scaler
-          </h2>
-          <p className="text-muted-foreground mt-3">
-            Le suivi du seuil légal est gratuit à vie. Passez au plan{" "}
-            <strong>Créateur</strong> à {CREATOR_PRICE_EUR}&nbsp;€/mois pour
-            des contrats illimités, au plan <strong>Studio</strong> à{" "}
-            {STUDIO_PRICE_EUR}&nbsp;€/mois pour la signature électronique et les
-            relances automatiques, ou au plan <strong>Expert</strong> à{" "}
-            {EXPERT_PRICE_EUR}&nbsp;€/mois pour l&apos;analyse IA de vos
-            contrats entrants.
+      {/* Pourquoi la conformité est obligatoire */}
+      <section className="mx-auto max-w-3xl px-4 py-16">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Depuis 2026, un contrat écrit est obligatoire
+        </h2>
+        <div className="text-muted-foreground mt-4 space-y-4 text-sm leading-relaxed">
+          <p>
+            La loi française n°2023-451 du 9 juin 2023, complétée par le décret n°2025-1137, impose un{" "}
+            <strong className="text-foreground">contrat écrit obligatoire</strong> pour toute collaboration
+            commerciale dès que la rémunération atteint{" "}
+            <strong className="text-foreground">1 000 € HT par annonceur et par an</strong>.
           </p>
-          <div className="mt-6">
-            <Button nativeButton={false} render={<Link href="/pricing" />}>
-              Voir les tarifs
-            </Button>
+          <p>
+            Sans contrat, la collaboration peut être frappée de nullité. Beaucoup de créateurs franchissent
+            ce seuil sans le savoir, en gérant leurs partenariats par DM ou email.
+          </p>
+          <p>
+            Brandeal calcule automatiquement le cumul par marque, vous alerte au bon moment et génère les documents nécessaires.
+          </p>
+        </div>
+      </section>
+
+      {/* Confiance */}
+      <section className="border-t bg-muted/30">
+        <div className="mx-auto max-w-5xl px-4 py-16">
+          <h2 className="text-center text-2xl font-semibold tracking-tight">
+            Pourquoi Brandeal
+          </h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {TRUST.map((t) => (
+              <div key={t.label} className="flex items-center gap-3">
+                <t.icon className="text-primary size-5 shrink-0" />
+                <span className="text-sm font-medium">{t.label}</span>
+              </div>
+            ))}
           </div>
         </div>
+      </section>
+
+      {/* CTA final */}
+      <section className="mx-auto max-w-3xl px-4 py-20 text-center">
+        <h2 className="text-3xl font-semibold tracking-tight text-balance">
+          Brandeal est le premier copilote IA qui gère l&apos;intégralité de vos collaborations avec les marques.
+        </h2>
+        <p className="text-muted-foreground mt-4">
+          Rejoignez les créateurs qui ne perdent plus de temps sur l&apos;administratif.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Button
+            size="lg"
+            nativeButton={false}
+            render={<Link href="/signup" />}
+          >
+            Commencer gratuitement
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/pricing" />}
+          >
+            Voir les tarifs
+          </Button>
+        </div>
+        <p className="text-muted-foreground mt-3 text-xs">
+          Gratuit jusqu&apos;à 2 contrats par mois. Sans carte bancaire.
+        </p>
       </section>
     </div>
   )
