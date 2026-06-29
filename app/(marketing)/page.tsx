@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import {
   AlertTriangle,
@@ -144,13 +145,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Screenshot placeholder */}
+      {/* Screenshot dashboard */}
       <section className="mx-auto max-w-5xl px-4 py-16">
-        <div className="bg-muted/40 border-border flex aspect-video w-full items-center justify-center rounded-2xl border-2 border-dashed">
-          <div className="text-center">
-            <p className="text-muted-foreground text-sm font-medium">Capture d&apos;écran du dashboard</p>
-            <p className="text-muted-foreground mt-1 text-xs">À remplacer par un screenshot de l&apos;app</p>
-          </div>
+        <div className="overflow-hidden rounded-2xl border shadow-lg">
+          <Image
+            src="/screenshot-dashboard.webp"
+            alt="Tableau de bord Brandeal — suivi du seuil légal et alertes"
+            width={1456}
+            height={816}
+            className="w-full"
+            priority
+          />
         </div>
       </section>
 
@@ -204,8 +209,25 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-          <div className="bg-muted/40 border-border mt-8 flex aspect-video w-full items-center justify-center rounded-xl border-2 border-dashed">
-            <p className="text-muted-foreground text-xs">Screenshot de l&apos;analyse IA à ajouter ici</p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="overflow-hidden rounded-xl border shadow-md">
+              <Image
+                src="/screenshot-ai-input.webp"
+                alt="Interface d'analyse de contrat Brandeal"
+                width={1456}
+                height={816}
+                className="w-full"
+              />
+            </div>
+            <div className="overflow-hidden rounded-xl border shadow-md">
+              <Image
+                src="/screenshot-ai-result.webp"
+                alt="Résultats de l'analyse IA — clauses à risque détectées"
+                width={1456}
+                height={816}
+                className="w-full"
+              />
+            </div>
           </div>
         </div>
       </section>
