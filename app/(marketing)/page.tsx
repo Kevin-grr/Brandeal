@@ -13,11 +13,6 @@ import {
   Zap,
 } from "lucide-react"
 
-import {
-  CREATOR_PRICE_EUR,
-  STUDIO_PRICE_EUR,
-  EXPERT_PRICE_EUR,
-} from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import {
   Card,

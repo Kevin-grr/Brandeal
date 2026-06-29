@@ -55,7 +55,7 @@ export function DealDeleteButton({ id, title }: { id: string; title: string }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Supprimer ce partenariat ?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{title}" sera archivé et ne sera plus visible.
+              &ldquo;{title}&rdquo; sera archivé et ne sera plus visible.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

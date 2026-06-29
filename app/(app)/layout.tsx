@@ -1,10 +1,9 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { LogOut, Settings, User } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
 
 import { requireUser } from "@/lib/auth"
 import { getProfile } from "@/lib/profile"
-import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
