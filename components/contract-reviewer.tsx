@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import type { ReviewBalance, ReviewFinding } from "@/types/database"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { PdfImportButton } from "@/components/pdf-import-button"
 
 interface ReviewResult {
   score: number
@@ -90,10 +91,13 @@ export function ContractReviewer() {
           placeholder="Collez ici le texte du contrat envoyé par la marque…"
           className="font-mono text-xs"
         />
-        <Button onClick={analyze} disabled={loading}>
-          <Sparkles className="size-4" />
-          {loading ? "Analyse en cours…" : "Analyser le contrat"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={analyze} disabled={loading}>
+            <Sparkles className="size-4" />
+            {loading ? "Analyse en cours…" : "Analyser le contrat"}
+          </Button>
+          <PdfImportButton onText={setText} />
+        </div>
       </div>
 
       {result && (

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { PdfImportButton } from "@/components/pdf-import-button"
 
 interface Extracted {
   brand_name?: string
@@ -156,10 +157,13 @@ export function DealImporter({
           onChange={(e) => setText(e.target.value)}
           placeholder="Collez ici l'email, le DM ou le brief reçu…"
         />
-        <Button onClick={analyze} disabled={loading}>
-          <Wand2 className="size-4" />
-          {loading ? "Analyse en cours…" : "Analyser le message"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={analyze} disabled={loading}>
+            <Wand2 className="size-4" />
+            {loading ? "Analyse en cours…" : "Analyser le message"}
+          </Button>
+          <PdfImportButton onText={setText} />
+        </div>
       </div>
 
       {data && (
