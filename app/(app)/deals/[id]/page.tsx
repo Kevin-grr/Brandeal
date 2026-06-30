@@ -170,7 +170,7 @@ export default async function DealDetailPage({
         </CardHeader>
         <CardContent className="space-y-4">
           <DealTimeline data={timeline} />
-          {deal.signed_at && !deal.published_at && (
+          {signedAt && !deal.published_at && (
             <MarkPublishedButton dealId={deal.id} />
           )}
         </CardContent>
