@@ -21,6 +21,7 @@ import { DealTimeline, type DealTimelineData } from "@/components/deal-timeline"
 import { InvoiceSection } from "@/components/invoice-section"
 import { LegalDisclaimer } from "@/components/legal-disclaimer"
 import { ShareDealCard } from "@/components/share-deal-card"
+import { MarkPublishedButton } from "@/components/mark-published-button"
 
 function labelOf(
   list: readonly { value: string; label: string }[],
@@ -167,8 +168,11 @@ export default async function DealDetailPage({
             De l&apos;accord au paiement, en un coup d&apos;œil.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <DealTimeline data={timeline} />
+          {deal.signed_at && !deal.published_at && (
+            <MarkPublishedButton dealId={deal.id} />
+          )}
         </CardContent>
       </Card>
 
