@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { callClaude, isAIConfigured } from "@/lib/ai"
+import { checkAiRateLimit, recordAiCall } from "@/lib/ai-rate-limit"
 import { buildAssistantContext } from "@/lib/assistant-context"
 import { createClient } from "@/lib/supabase/server"
 
@@ -42,6 +43,21 @@ export async function POST(req: Request) {
     )
   }
 
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("plan")
+    .eq("user_id", user.id)
+    .maybeSingle()
+  const plan = (sub?.plan as string) ?? "free"
+
+  const { allowed, used, limit } = await checkAiRateLimit(user.id, plan)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: `Limite IA atteinte (${used}/${limit} aujourd'hui). Revenez demain ou passez à un plan supérieur.` },
+      { status: 429 }
+    )
+  }
+
   const body = (await req.json().catch(() => ({}))) as {
     question?: string
     history?: { role: "user" | "assistant"; content: string }[]
@@ -51,6 +67,8 @@ export async function POST(req: Request) {
   if (question.length < 2) {
     return NextResponse.json({ error: "Posez une question." }, { status: 400 })
   }
+
+  await recordAiCall(user.id, "assistant")
 
   try {
     const context = await Promise.race([

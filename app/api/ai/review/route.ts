@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { callClaude, extractJson, isAIConfigured } from "@/lib/ai"
+import { checkAiRateLimit, recordAiCall } from "@/lib/ai-rate-limit"
 import { createClient } from "@/lib/supabase/server"
 import type { ReviewBalance, ReviewFinding } from "@/types/database"
 
@@ -54,6 +55,21 @@ export async function POST(req: Request) {
     )
   }
 
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("plan")
+    .eq("user_id", user.id)
+    .maybeSingle()
+  const plan = (sub?.plan as string) ?? "free"
+
+  const { allowed, used, limit } = await checkAiRateLimit(user.id, plan)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: `Limite IA atteinte (${used}/${limit} aujourd'hui).` },
+      { status: 429 }
+    )
+  }
+
   const body = (await req.json().catch(() => ({}))) as {
     text?: string
     filename?: string
@@ -66,6 +82,8 @@ export async function POST(req: Request) {
       { status: 400 }
     )
   }
+
+  await recordAiCall(user.id, "review")
 
   // Crée la ligne d'analyse (statut processing).
   const { data: review } = await supabase

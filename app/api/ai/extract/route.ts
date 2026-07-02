@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { callClaude, extractJson, isAIConfigured } from "@/lib/ai"
+import { checkAiRateLimit, recordAiCall } from "@/lib/ai-rate-limit"
 import { createClient } from "@/lib/supabase/server"
 
 export const runtime = "nodejs"
@@ -48,6 +49,21 @@ export async function POST(req: Request) {
     )
   }
 
+  const { data: sub } = await supabase
+    .from("subscriptions")
+    .select("plan")
+    .eq("user_id", user.id)
+    .maybeSingle()
+  const plan = (sub?.plan as string) ?? "free"
+
+  const { allowed, used, limit } = await checkAiRateLimit(user.id, plan)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: `Limite IA atteinte (${used}/${limit} aujourd'hui).` },
+      { status: 429 }
+    )
+  }
+
   const body = (await req.json().catch(() => ({}))) as { text?: string }
   const text = (body.text ?? "").trim()
   if (text.length < 20) {
@@ -56,6 +72,8 @@ export async function POST(req: Request) {
       { status: 400 }
     )
   }
+
+  await recordAiCall(user.id, "extract")
 
   try {
     const raw = await callClaude({

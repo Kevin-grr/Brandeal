@@ -27,6 +27,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Champs requis manquants." }, { status: 400 })
   }
 
+  // Vérifier que la marque appartient bien à cet utilisateur avant toute création.
+  const { data: ownedBrand } = await supabase
+    .from("brands")
+    .select("id")
+    .eq("id", body.brand_id)
+    .eq("user_id", user.id)
+    .maybeSingle()
+  if (!ownedBrand) {
+    return NextResponse.json({ error: "Marque introuvable." }, { status: 403 })
+  }
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")

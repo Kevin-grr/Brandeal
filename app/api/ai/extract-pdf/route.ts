@@ -20,18 +20,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Fichier manquant." }, { status: 400 })
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase()
-
-  if (ext === "txt") {
-    const text = await file.text()
-    return NextResponse.json({ text: text.trim() })
+  const MAX_SIZE = 10 * 1024 * 1024 // 10 Mo
+  if (file.size > MAX_SIZE) {
+    return NextResponse.json(
+      { error: "Fichier trop volumineux (max 10 Mo)." },
+      { status: 413 }
+    )
   }
 
-  if (ext === "pdf") {
+  const ext = file.name.split(".").pop()?.toLowerCase()
+  const mime = file.type
+
+  if (ext === "txt" || mime === "text/plain") {
+    const text = await file.text()
+    return NextResponse.json({ text: text.slice(0, 100_000).trim() })
+  }
+
+  if (ext === "pdf" || mime === "application/pdf") {
     const buffer = Buffer.from(await file.arrayBuffer())
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const pdfParse = require("pdf-parse")
-    const data = await pdfParse(buffer)
+    const data = await pdfParse(buffer, { max: 50 })
     return NextResponse.json({ text: (data.text as string).trim() })
   }
 

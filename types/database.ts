@@ -666,6 +666,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_usage: {
+        Row: {
+          id: string
+          user_id: string
+          endpoint: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          endpoint: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          endpoint?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      stripe_webhook_events: {
+        Row: {
+          id: string
+          stripe_event_id: string
+          event_type: string
+          processed_at: string
+        }
+        Insert: {
+          id?: string
+          stripe_event_id: string
+          event_type: string
+          processed_at?: string
+        }
+        Update: {
+          id?: string
+          stripe_event_id?: string
+          event_type?: string
+          processed_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<never, never>
     Functions: {
