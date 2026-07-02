@@ -84,7 +84,7 @@ export const STORAGE_BUCKETS = {
 export const LEGAL_ENTITY = {
   serviceName: "Brandeal",
   editor: "Brandeal",
-  contactEmail: "contact@contratcreateur.fr",
+  contactEmail: "contact@brandeal.fr",
   appHost:
     "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723 (États-Unis)",
   dataHost:
