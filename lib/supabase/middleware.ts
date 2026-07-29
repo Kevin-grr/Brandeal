@@ -40,9 +40,20 @@ export async function updateSession(request: NextRequest) {
   )
 
   // IMPORTANT : ne rien insérer entre createServerClient et getUser.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // Timeout de sécurité : si Supabase répond lentement, on ne bloque jamais
+  // tout le site (page d'accueil incluse) en attente indéfinie du middleware.
+  let user = null
+  try {
+    const result = await Promise.race([
+      supabase.auth.getUser(),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("AUTH_TIMEOUT")), 5_000)
+      ),
+    ])
+    user = result.data.user
+  } catch {
+    user = null
+  }
 
   const path = request.nextUrl.pathname
 
