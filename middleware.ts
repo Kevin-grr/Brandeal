@@ -13,7 +13,8 @@ export const config = {
      * - les fichiers statiques Next (_next/static, _next/image)
      * - favicon, fichiers image
      * - le webhook Stripe (doit rester accessible sans session)
+     * - la vitrine /prada (page publique indépendante, sans Supabase)
      */
-    "/((?!_next/static|_next/image|favicon.ico|api/webhooks|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/webhooks|prada|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 }
